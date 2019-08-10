@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { CursosRepository } from '../api/CursoRepository';
-import { CursoItem } from '../components/CursoItem';
-import { Segment, List, Header } from 'semantic-ui-react'
+import { CursoRepository } from '../../api/CursoRepository';
+import { CursoItem } from './CursoItem';
+import { Segment, List, Label, Icon } from 'semantic-ui-react'
 
 export class CursoList extends Component {
     state = {
@@ -9,14 +9,14 @@ export class CursoList extends Component {
     }
 
     async componentDidMount() {
-        const { items } = await CursosRepository.all()
+        const { items } = await CursoRepository.all()
         this.setState({ cursos: items })
     }
 
     render() {
         return (
             <Segment>
-                <Header> Cursos</Header>
+                <Label basic attached="bottom left"><Icon name='add' />Adicionar</Label>
                 <List horizontal animated verticalAlign='middle'>
                     {this.state.cursos.map(c => (
                         <CursoItem key={c.id} curso={c} />

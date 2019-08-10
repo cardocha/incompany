@@ -1,6 +1,6 @@
 import cursos from './cursos-data.json'
 
-export class CursosRepository {
+export class CursoRepository {
     static all() {
         return new Promise((resolve, reject) => {
             if (cursos) {
