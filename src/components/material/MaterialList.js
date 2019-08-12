@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button, Icon, Label } from 'semantic-ui-react'
+import { List, Button, Icon, Label, Popup, Form } from 'semantic-ui-react'
 
 export class MaterialList extends Component {
     state = {
@@ -66,8 +66,32 @@ export class MaterialList extends Component {
         return (
             <List.Item>
                 <List selection verticalAlign='middle' key={"list-" + titulo}>
-                    <Label>{titulo}</Label>
-                    <Button icon="add" size="mini" basic></Button>
+                    <Label><Icon name="tag"/>{titulo}</Label>
+                    <Popup wide="very"
+                        trigger={
+                            <Button icon="add" size="mini" basic></Button>
+                        }
+                        content={
+                            <Form>
+                                <Form.Group widths="16">
+                                    <Form.Field>
+                                        <label>Título</label>
+                                        <input placeholder='Título' />
+                                    </Form.Field>
+                                    <Form.Field >
+                                        <label>Link</label>
+                                        <input placeholder='link do material' />
+                                    </Form.Field>
+                                    <Form.Field >
+                                        <label>&nbsp;</label>
+                                        <Button icon="check" basic></Button>
+                                    </Form.Field>
+                                </Form.Group>
+                            </Form>
+                        }
+                        on='click'
+                        position='right center'
+                    />
                     {this.renderMaterial(materialList)}
                 </List>
             </List.Item>
