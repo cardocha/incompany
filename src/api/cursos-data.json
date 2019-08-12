@@ -2,12 +2,44 @@
     "items": [
         {
             "id": 1,
-            "titulo":"Corte e costura / Silk Screen",
-            "nomeTutor":"Aureliano Corrêa",
-            "ativo":true,
-            "usuarioCriacao":"Jorge",
-            "publicado":true,
-            "categoria":"Costura"
+            "titulo": "Corte e costura / Silk Screen",
+            "nomeTutor": "Aureliano Corrêa",
+            "ativo": true,
+            "usuarioCriacao": "Jorge",
+            "publicado": true,
+            "categoria": "Costura",
+            "unidades": [
+                {
+                    "id": 1,
+                    "titulo": "Costura básica 1",
+                    "materiais": [
+                        {
+                            "id": 4,
+                            "titulo": "Questionário da unidade",
+                            "tipo": "Q",
+                            "url": ""
+                        },
+                        {
+                            "id": 1,
+                            "titulo": "Introdução",
+                            "tipo": "V",
+                            "url": "https://www.youtube.com/watch?v=rsnKlcZxsnM"
+                        },
+                        {
+                            "id": 2,
+                            "titulo": "Síntese da unidade",
+                            "tipo": "D",
+                            "url": "https://www.vuemastery.com/pdf/Vue-Essentials-Cheat-Sheet.pdf"
+                        },
+                        {
+                            "id": 3,
+                            "titulo": "Material de apoio",
+                            "tipo": "D",
+                            "url": "https://www.vuemastery.com/pdf/Vue-Essentials-Cheat-Sheet.pdf"
+                        }
+                    ]
+                }
+            ]
         },
         {
             "id": 2,
@@ -16,7 +48,14 @@
             "ativo": true,
             "usuarioCriacao": "Divo",
             "publicado": true,
-            "categoria": "Eletrônica"
+            "categoria": "Eletrônica",
+            "unidades": [
+                {
+                    "id": 1,
+                    "titulo": "Eletrônica Digital 1",
+                    "materiais": []
+                }
+            ]
         }
     ]
 }

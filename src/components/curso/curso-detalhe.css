@@ -1,0 +1,17 @@
+.ui.segment.bottom-extended {
+    padding-bottom: 60px;
+}
+.accordion.ui.styled {
+    width: 100%;
+    margin-bottom: 15px;
+}
+.button.ui.button.button-action-detail {
+    margin-right: 10px !important;
+}
+.ui.header.header-detalhes {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+.content.active {
+    padding-bottom: 40px !important;
+}

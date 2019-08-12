@@ -5,16 +5,16 @@ export class CursoRepository {
         return new Promise((resolve, reject) => {
             if (cursos) {
                 resolve(cursos);
-            } else { 
+            } else {
                 reject();
             }
         })
     }
 
-    static findById(id){
+    static findById(id) {
         return new Promise((resolve, reject) => {
             const curso = cursos.items.find(c => c.id === parseInt(id))
-            if (cursos) {
+            if (curso) {
                 resolve(curso);
             } else {
                 reject();
