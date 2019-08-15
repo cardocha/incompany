@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository';
-import { Segment, Form, Button, Divider, Accordion, Header, Icon, Popup } from 'semantic-ui-react';
+import { Segment, Form, Button, Divider, Accordion, Header, Icon, Popup, Message } from 'semantic-ui-react';
 import { Link } from 'react-router-dom'
 import './curso-detalhe.css'
 import { MaterialList } from '../material/MaterialList';
 
 export class CursoDetalhe extends Component {
-    state = {
-        curso: {},
-        unidades: []
+
+    constructor(props) {
+        super(props)
+        this.state = {}
+        this.handleChange = this.handleChange.bind(this);
     }
 
     async componentDidMount() {
         const curso = await CursoRepository.findById(this.props.match.params.id)
         this.setState({ curso })
         this.setState({ unidades: this.buildUnidades(curso) })
+        this.setState({ titulo: curso.titulo })
+        this.setState({ nomeTutor: curso.nomeTutor })
     }
 
-    handleChange = (e) => {
-        const fieldName = e.target.name
-        this.setState({ fieldName: e.target.value })
+    handleChange(e) {
+        this.setState({ titulo: e.target.value });
     }
 
     buildUnidades(curso) {
@@ -42,18 +45,21 @@ export class CursoDetalhe extends Component {
     render() {
         return (
             <Segment className="bottom-extended">
-                <Header>{this.state.curso.titulo}</Header>
+                <Header>{this.state.titulo}</Header>
                 <Form>
                     <Form.Group widths='equal'>
-                        <Form.Field>
+                        <Form.Field >
                             <label>Título</label>
-                            <input placeholder='Título' value={this.state.curso.titulo}
+                            <input placeholder='Título'
+                                type="text"
+                                value={this.state.titulo}
                                 onChange={this.handleChange} />
                         </Form.Field>
                         <Form.Field>
                             <label>Nome Tutor</label>
-                            <input placeholder='Nome do Tutor' value={this.state.curso.nomeTutor}
-                                onChange={this.handleChange} />
+                            <input placeholder='Nome do Tutor'
+                                type="text"
+                                defaultValue={this.state.nomeTutor} />
                         </Form.Field>
                     </Form.Group>
                     <Divider></Divider>
@@ -70,6 +76,7 @@ export class CursoDetalhe extends Component {
                             }
                             content={
                                 <Form>
+                                    <Header>Nova Unidade</Header>
                                     <Form.Group widths="16">
                                         <Form.Field>
                                             <label>Título</label>
