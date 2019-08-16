@@ -12,7 +12,7 @@ export class QuestaoItem extends Component {
 
     async componentDidMount() {
         this.setState({ enunciado: this.props.questao.enunciado })
-        this.setState({ renderAlternativas: true })
+        this.setState({ renderAlternativas: false })
         this.toggleStateAlternativasHideButton(false)
     }
 
@@ -24,12 +24,22 @@ export class QuestaoItem extends Component {
     }
 
     toggleRenderAlternativas() {
-        this.setState({ renderAlternativas: !this.renderAlternativas });
+        this.setState({ renderAlternativas: !this.state.renderAlternativas });
         this.toggleStateAlternativasHideButton(this.state.renderAlternativas)
     }
 
     handleChange(e) {
         this.setState({ enunciado: e.target.value });
+    }
+
+    renderAlternativas() {
+        return this.state.renderAlternativas ? (
+            <Form.Group>
+                <Form.Field width={"16"}>
+                    <AlternativaList key={"questao-edicao-" + this.props.questao.id} questao={this.props.questao} ></AlternativaList>
+                </Form.Field>
+            </Form.Group>
+        ) : null
     }
 
     render() {
@@ -39,14 +49,9 @@ export class QuestaoItem extends Component {
                     <Form.Group>
                         <Form.Input onChange={this.handleChange.bind(this)}
                             size="small"
-                            label="Enunciado"
                             value={this.state.enunciado} width={"16"} />
                     </Form.Group>
-                    <Form.Group>
-                        <Form.Field width={"16"}>
-                            <AlternativaList key={"questao-edicao-" + this.props.questao.id} questao={this.props.questao} ></AlternativaList>
-                        </Form.Field>
-                    </Form.Group>
+                    {this.renderAlternativas()}
                 </Form>
                 <Button basic floated="right" size="mini" > <Icon name="close"></Icon> Remover Questão</Button>
                 <Button

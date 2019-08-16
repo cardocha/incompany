@@ -15,3 +15,12 @@
 .content.active {
     padding-bottom: 40px !important;
 }
+.botao-item-sistema {
+    padding: 0px !important;
+}
+.header.nome-list {
+    margin-top: 10px !important;
+}
+.ui.tiny.center.aligned.header.header-listagem {
+    margin-top: 0px !important;
+}

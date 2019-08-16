@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, Header, Label, Icon, List, Button } from 'semantic-ui-react';
 import { QuestaoItem } from './QuestaoItem'
+import { Link } from 'react-router-dom'
 
 export const QuestionarioModal = ({ curso, questoes }) =>
     (<Modal open={true}>
@@ -14,10 +15,15 @@ export const QuestionarioModal = ({ curso, questoes }) =>
         </Modal.Content>
         <Modal.Actions>
             <Button basic>
-                <Icon name="check"/>Salvar
+                <Icon name="check" />Salvar
             </Button>
+            <Link to={`/cursos/${curso.id}`}>
+                <Button floated="left" basic>
+                    <Icon name="arrow left" />Cancelar
+                </Button>
+            </Link>
             <Button floated="left" basic>
-                <Icon name="arrow left" />Cancelar
+                <Icon name="add" />Nova Questão
             </Button>
         </Modal.Actions>
     </Modal>)

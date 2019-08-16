@@ -1,0 +1,14 @@
+{
+    "items":[
+        {
+            "id":1,
+            "nome":"Roberto Tramontina",
+            "login":"rob"
+        },
+        {
+            "id": 1,
+            "nome": "Joel Silva",
+            "login": "jojo"
+        }
+    ]
+}
