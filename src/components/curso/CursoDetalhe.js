@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository';
-import { Segment, Form, Button, Divider, Accordion, Header, Icon, Popup, Message } from 'semantic-ui-react';
+import { Segment, Form, Button, Divider, Accordion, Header, Icon, Popup } from 'semantic-ui-react';
 import { Link } from 'react-router-dom'
 import './curso-detalhe.css'
 import { MaterialList } from '../material/MaterialList';

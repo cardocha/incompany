@@ -13,9 +13,9 @@ export class QuestionarioRepository {
 
     static findById(id) {
         return new Promise((resolve, reject) => {
-            const questao = questoes.items.find(c => c.id === parseInt(id))
-            if (questao) {
-                resolve(questao);
+            const questionario = questoes.items.find(q => q.id === parseInt(id))
+            if (questionario) {
+                resolve(questionario);
             } else {
                 reject();
             }

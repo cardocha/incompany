@@ -7,15 +7,13 @@ export class MaterialList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            materiais: [],
-            unidadesVisible: true
+            materiais: []
         }
 
     }
 
     async componentDidMount() {
         this.setState({ materiais: this.props.materiais })
-        this.setState({ unidadesVisible: true })
     }
 
     getMaterialIcon(material) {

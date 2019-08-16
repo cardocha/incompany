@@ -1,24 +1,28 @@
 {
     "items": [
         {
-            "id": 1,
+            "id": 4,
             "enunciado": "Indique a resposta correta.",
             "alternativas": [
                 {
                     "id": 1,
-                    "texto": "Possível Resposta 1"
+                    "texto": "Possível Resposta 1",
+                    "correta": false
                 },
                 {
                     "id": 2,
-                    "texto": "Possível Resposta 2"
+                    "texto": "Possível Resposta 2",
+                    "correta": false
                 },
                 {
                     "id": 3,
-                    "texto": "Possível Resposta 3"
+                    "texto": "Possível Resposta 3",
+                    "correta": false
                 },
                 {
                     "id": 4,
-                    "texto": "Possível Resposta 4"
+                    "texto": "Possível Resposta 4",
+                    "correta": true
                 }
             ]
         }
