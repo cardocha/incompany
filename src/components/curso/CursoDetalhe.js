@@ -32,7 +32,7 @@ export class CursoDetalhe extends Component {
                 key: unidade.id, title: unidade.titulo, content: {
                     content: (
                         <div>
-                            <MaterialList materiais={unidade.materiais}></MaterialList>
+                            <MaterialList curso={curso} materiais={unidade.materiais}></MaterialList>
                             <Button basic floated="right" size="mini" > Remover unidade {unidade.titulo}</Button>
                         </div>
                     )

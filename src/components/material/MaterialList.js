@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import { List, Button, Icon, Label } from 'semantic-ui-react'
 import { MaterialItemForm } from './MaterialItemForm';
+import { Link } from 'react-router-dom';
 
 export class MaterialList extends Component {
-    state = {
-        materiais: []
+    constructor(props) {
+        super(props)
+        this.state = {
+            materiais: [],
+            unidadesVisible: true
+        }
+
     }
 
     async componentDidMount() {
         this.setState({ materiais: this.props.materiais })
+        this.setState({ unidadesVisible: true })
     }
 
     getMaterialIcon(material) {
@@ -51,7 +58,23 @@ export class MaterialList extends Component {
         return imageRegex.test(url);
     }
 
+    toggleVisibleUnidades() {
+        this.setState({ unidadesVisible: !this.state.unidadesVisible })
+    }
+
     renderMaterial(material) {
+        const botaoEditar = material.tipo === 'Q' ?
+            (<Link to={`/cursos/${this.props.curso.id}/questionario/${material.id}`}>
+                <Button onClick={this.toggleVisibleUnidades.bind(this)} icon="pencil" basic floated="right" size="mini"></Button>
+            </Link>) :
+
+            (<MaterialItemForm
+                material={material}
+                titulo={"Editar " + material.titulo}
+                icon="pencil"
+                buttonFloated="right"
+                position="left center"></MaterialItemForm>)
+
         return (
             <List.Item key={material.id}>
                 <span>
@@ -59,12 +82,7 @@ export class MaterialList extends Component {
                     {material.titulo}
                 </span>
                 <Button icon="close" basic floated="right" size="mini"></Button>
-                <MaterialItemForm
-                    material={material}
-                    titulo={"Editar " + material.titulo}
-                    icon="pencil"
-                    buttonFloated="right"
-                    position="left center"></MaterialItemForm>
+                {botaoEditar}
             </List.Item>
         )
     }
@@ -76,9 +94,10 @@ export class MaterialList extends Component {
                     <Label><Icon name="tag" />{titulo}</Label>
                     <MaterialItemForm
                         material={materialItem}
+                        curso={this.props.curso}
                         titulo={"Inclusão de " + titulo}
                         icon="add"
-                        buttonFloated="none"
+                        buttonFloated="left"
                         position="left center"></MaterialItemForm>
                     {this.renderMaterial(materialItem)}
                 </List>
@@ -105,6 +124,6 @@ export class MaterialList extends Component {
                 {this.renderMateriais(this.state.materiais, "D", "Documentos")}
                 {this.renderMateriais(this.state.materiais, "Q", "Questionários")}
             </List>
-        );
+        )
     }
 }
