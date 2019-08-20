@@ -1,13 +1,8 @@
-import categorias from './categorias-data.json'
+import { WebApi } from './WebApi';
 
 export class CategoriaRepository {
+
     static all() {
-        return new Promise((resolve, reject) => {
-            if (categorias) {
-                resolve(categorias);
-            } else {
-                reject();
-            }
-        })
+        return WebApi.create().get('categorias')
     }
 }

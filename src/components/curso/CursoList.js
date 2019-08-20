@@ -18,9 +18,10 @@ export class CursoList extends Component {
         const cursos = await CursoRepository.all()
         const usuarios = await UsuarioRepository.all()
         const categorias = await CategoriaRepository.all()
+        console.log(categorias)
         this.setState({ cursos: cursos.items })
         this.setState({ usuarios: usuarios.items })
-        this.setState({ categorias: categorias.items })
+        this.setState({ categorias: categorias.data })
     }
 
     render() {
