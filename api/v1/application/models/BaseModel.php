@@ -9,7 +9,7 @@ abstract class BaseModel extends CI_Model
         $dados = $this->sanitize_fields($dados, $this->get_tabela());
 
         if (isset($dados['id']) && intval($dados['id']) > 0)
-            return $this->atualiza($this->get_tabela(), $dados);
+            return $this->atualiza($dados);
 
         unset($dados['id']);
 

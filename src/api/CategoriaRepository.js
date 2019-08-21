@@ -5,9 +5,11 @@ export class CategoriaRepository {
         return WebApi.create().get('categorias')
     }
 
-    static save(descricao) {
-        const params = new URLSearchParams();
-        params.append('descricao', descricao);
-        return WebApi.create().post('categorias', params)
+    static save(categoria) {
+        return WebApi.create().post('categorias', categoria)
+    }
+
+    static remove(categoria) {
+        return WebApi.create().delete('categorias', { "data": categoria })
     }
 }

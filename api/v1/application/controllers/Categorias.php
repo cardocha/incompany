@@ -19,27 +19,48 @@ class Categorias extends BaseController
         }
     }
 
-    private function usuario_valido()
+    private function valida($categoria, $edicao)
     {
+        $this->form_validation->set_data($categoria);
         $this->form_validation->set_rules('descricao', 'Descrição', 'required');
+        if ($edicao) {
+            $this->form_validation->set_rules('id', 'Identificação', 'is_natural_no_zero');
+        }
         return $this->form_validation->run();
     }
 
-    protected function inserir($categoria)
+    protected function persistir($categoria)
     {
         $id = 0;
-        if ($this->usuario_valido()) {
-            $id = $this->categoria->inserir($this->input->post());
-        }
+        $validacao = $this->valida((array) $categoria, false);
+        $msg = "Categoria Salva.";
 
-        echo parent::resposta_json($id > 0, "Categoria Salva.", null);
+        if ($validacao) {
+            $id = $this->categoria->persistir((array)$categoria);
+        } else {
+            $msg = validation_errors();
+        }
+        
+        echo parent::resposta_json($id > 0, $msg, null);
     }
 
     protected function remover($categoria)
     {
-    }
+        $id = 0;
+        $validacao = $this->valida((array) $categoria, true);
+        $possui_cursos = $this->categoria->possui_cursos_vinculados($categoria->id);
+        $msg = "Categoria ".$categoria->descricao." Removida.";
 
-    protected function atualizar($categoria)
-    {
+        if (!$possui_cursos) {
+            if ($validacao) {
+                $id = $this->categoria->remover((array)$categoria);
+            } else {
+                $msg = validation_errors();
+            }
+        }
+        else
+             $msg = "Categoria ".$categoria->descricao." possui Cursos vinculados";
+
+        echo parent::resposta_json($id > 0, $msg, null);
     }
 }

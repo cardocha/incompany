@@ -24,8 +24,25 @@ class Categoria extends BaseModel
         return $query->result_array();
     }
 
-    public function inserir($categoria)
+    public function possui_cursos_vinculados($id)
+    {
+        $this->db->select('count(cat.id)');
+        $this->db->from($this->get_tabela(). " cat");
+        $this->db->join("curso c", "cat.id = c.categoria_id");
+        $this->db->where('cat.id', $id);
+        $this->db->group_by('cat.id');
+        
+        $query = $this->db->get();
+        return boolval(count($query->result_array()) > 0);
+    }
+
+    public function persistir($categoria)
     {
         return  parent::persiste($categoria, $this->get_tabela());
+    }
+
+    public function remover($categoria)
+    {
+        return  parent::remove($categoria['id'], 'id');
     }
 }

@@ -17,23 +17,22 @@ abstract class BaseController extends CI_Controller
     public function detectar_acao()
     {
         $method = $_SERVER["REQUEST_METHOD"];
+        $json_str = file_get_contents('php://input');
+        $json_obj = json_decode($json_str);
 
-        if ($method === "PUT") {
-            $this->atualizar($this->input->put());
-        } elseif ($method === "DELETE") {
-            $this->remover($this->input->delete());
+        if ($method === "DELETE") {
+            $this->remover($json_obj);
         } elseif ($method === "POST") {
-            $this->inserir($this->input->post());
+            $this->persistir($json_obj);
         }
         
         return $method;
     }
 
-    abstract protected function inserir($categoria);
+    abstract protected function persistir($categoria);
     abstract protected function remover($categoria);
-    abstract protected function atualizar($categoria);
 
-    function resposta_json($flag, $msg, $obj)
+    public function resposta_json($flag, $msg, $obj)
     {
         $res = (object) array(
          'flag'=>$flag,
@@ -41,6 +40,6 @@ abstract class BaseController extends CI_Controller
          'obj'=>$obj
        );
       
-       return json_encode($res);
+        return json_encode($res);
     }
 }

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository';
 import { CursoItem } from './CursoItem';
-import { Segment, List, Label, Icon, Header, Dimmer } from 'semantic-ui-react'
+import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider } from 'semantic-ui-react'
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { UsuarioItem } from '../usuario/UsuarioItem';
 import { CategoriaRepository } from '../../api/CategoriaRepository';
-import { CategoriaItem } from '../categoria/CategoriaItem';
 import { CategoriaItemForm } from '../categoria/CategoriaItemForm';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PopupForm } from '../PopupForm';
 
 export class CursoList extends Component {
 
@@ -23,7 +23,9 @@ export class CursoList extends Component {
             carregarCategorias: false
         }
         this.handleChangeDescricaoCategoria = this.handleChangeDescricaoCategoria.bind(this);
-        this.salvarCategoria = this.salvarCategoria.bind(this);
+        this.handleClickCategoriaItem = this.handleClickCategoriaItem.bind(this);
+        this.selectCategoria = this.selectCategoria.bind(this);
+        this.limparSelecaoCategoria = this.limparSelecaoCategoria.bind(this);
     }
 
     async componentDidMount() {
@@ -49,22 +51,48 @@ export class CursoList extends Component {
         return { id: 0, descricao: '' }
     }
 
+    limparSelecaoCategoria() {
+        this.setState({ categoriaSelecionada: this.initializeCategoria() })
+    }
+
+    selectCategoria(categoria) {
+        this.setState({ categoriaSelecionada: categoria })
+    }
+
     handleChangeDescricaoCategoria(e) {
         const categoria = {
-            id: 0,
+            id: this.state.categoriaSelecionada.id,
             descricao: e.target.value
         }
         this.setState({ categoriaSelecionada: categoria })
     }
 
-    async salvarCategoria() {
-        const resultado = await CategoriaRepository.save(this.state.categoriaSelecionada.descricao)
-        const flag = resultado.data.flag;
-        if (flag) {
+    handleClickCategoriaItem(acao) {
+        if (acao === "AE") {
+            this.salvarCategoria()
+        } else
+            if (acao === "R") {
+                this.removerCategoria()
+            }
+
+    }
+
+    setStatusRequisicao(resultado) {
+        toast(resultado.data.msg, {
+            type: resultado.data.flag ? toast.TYPE.INFO : toast.TYPE.WARNING
+        });
+        if(resultado.data.flag){
             this.setState({ categoriaSelecionada: this.initializeCategoria() })
-            toast(resultado.data.msg);
             this.updateCategorias()
         }
+    }
+
+    async salvarCategoria() {
+        this.setStatusRequisicao(await CategoriaRepository.save(this.state.categoriaSelecionada));
+    }
+
+    async removerCategoria() {
+        this.setStatusRequisicao(await CategoriaRepository.remove(this.state.categoriaSelecionada));
     }
 
     render() {
@@ -92,23 +120,60 @@ export class CursoList extends Component {
                     as={Segment}
                     key={this.state.updateCategorias}
                     active={this.state.carregarCategorias}>
-                    <CategoriaItemForm
-                        categoria={this.state.categoriaSelecionada}
-                        titulo={"Inclusão de Categoria de curso"}
-                        icon="add"
-                        changeAction={this.handleChangeDescricaoCategoria}
-                        onclickAction={this.salvarCategoria}
-                        buttonFloated="left"
-                        position="left center"></CategoriaItemForm>
+                    <PopupForm
+                        trigger={
+                            <Button basic
+                                onClick={this.limparSelecaoCategoria}
+                                className="pointer"
+                                as="a"
+                                floated="left"
+                                size="mini"> <Icon name="add"></Icon>Adicionar
+                            </Button>
+                        }
+                        position="left center"
+                        content={
+                            <CategoriaItemForm
+                                titulo={"Inclusão de Categoria de Curso"}
+                                categoria={this.state.categoriaSelecionada}
+                                changeAction={this.handleChangeDescricaoCategoria}
+                                onClickAction={this.handleClickCategoriaItem}>
+                            </CategoriaItemForm>}
+                    ></PopupForm>
+
                     <Header className="header-listagem" textAlign="center" size="tiny">Categorias de Cursos  </Header>
                     <List horizontal animated verticalAlign='middle'>
                         {this.state.categorias.map(c => (
-                            <CategoriaItem key={c.id} categoria={c} />
+                            <List.Item key={c.id} >
+                                <PopupForm
+                                    trigger={
+                                        <Button onClick={() => this.selectCategoria(c)} className="botao-item-sistema" basic>
+                                            <List.Content>
+                                                <Segment compact basic>
+                                                    <Icon name='grid layout' size='big' />
+                                                    <List.Header className="nome-list">{c.descricao}</List.Header>
+                                                    <Divider></Divider>
+                                                    <Label size="mini" basic>
+                                                        <Icon name='cube' /> {c.qtdCursos}
+                                                    </Label>
+                                                </Segment>
+                                            </List.Content>
+                                        </Button>
+                                    }
+                                    position="left center"
+                                    content={
+                                        <CategoriaItemForm
+                                            titulo={"Edição de Categoria de Curso"}
+                                            categoria={this.state.categoriaSelecionada}
+                                            changeAction={this.handleChangeDescricaoCategoria}
+                                            onClickAction={this.handleClickCategoriaItem}>
+                                        </CategoriaItemForm>}
+                                ></PopupForm>
+                            </List.Item>
                         ))}
                     </List>
                     <Dimmer active={this.state.carregarCategorias}>
                         <Header as='h2' inverted>
-                            <Icon name=' circle notch' />
+                            <Icon loading name='circle notch' />
                         </Header>
                     </Dimmer>
                 </Dimmer.Dimmable>
