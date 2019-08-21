@@ -1,10 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { CursoList } from './components/curso/CursoList';
-import 'semantic-ui-css/semantic.min.css'
 import { BarraTopo } from './components/BarraTopo';
 import { CursoDetalhe } from './components/curso/CursoDetalhe';
 import { QuestionarioDetalhe } from './components/questionario/QuestionarioDetalhe';
+import { toast } from 'react-toastify';
+import 'semantic-ui-css/semantic.min.css'
+import 'react-toastify/dist/ReactToastify.css';
+
+toast.configure()
 
 function App() {
 
