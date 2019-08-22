@@ -21,12 +21,12 @@ class Categorias extends BaseController
 
     private function valida($categoria, $edicao)
     {
-        $this->form_validation->set_data($categoria);
-        $this->form_validation->set_rules('descricao', 'Descrição', 'required');
+        $validacao = parent::get_validador($categoria);
+        $validacao->set_rules('descricao', 'Descrição', 'required');
         if ($edicao) {
-            $this->form_validation->set_rules('id', 'Identificação', 'is_natural_no_zero');
+            $validacao->set_rules('id', 'Identificação', 'is_natural_no_zero');
         }
-        return $this->form_validation->run();
+        return $validacao->run();
     }
 
     protected function persistir($categoria)
@@ -38,7 +38,7 @@ class Categorias extends BaseController
         if ($validacao) {
             $id = $this->categoria->persistir((array)$categoria);
         } else {
-            $msg = validation_errors();
+            $msg = parent::get_errors();
         }
         
         echo parent::resposta_json($id > 0, $msg, null);
@@ -49,13 +49,13 @@ class Categorias extends BaseController
         $id = 0;
         $validacao = $this->valida((array) $categoria, true);
         $possui_cursos = $this->categoria->possui_cursos_vinculados($categoria->id);
-        $msg = "Categoria ".$categoria->descricao." Removida.";
+        $msg = "Categoria \"".$categoria->descricao."\" Removida.";
 
         if (!$possui_cursos) {
             if ($validacao) {
                 $id = $this->categoria->remover((array)$categoria);
             } else {
-                $msg = validation_errors();
+                $msg = parent::get_errors();
             }
         }
         else

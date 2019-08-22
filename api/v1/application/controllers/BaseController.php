@@ -42,4 +42,16 @@ abstract class BaseController extends CI_Controller
       
         return json_encode($res);
     }
+
+    public function get_validador($registro){
+        $this->form_validation->set_error_delimiters('', '|');
+        $this->form_validation->set_data($registro);
+        return $this->form_validation;
+    }
+
+    public function get_errors(){
+       $erros = explode("|", validation_errors());
+       array_pop($erros);
+       return $erros;
+    }
 }

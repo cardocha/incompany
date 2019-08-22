@@ -1,8 +1,9 @@
 import React from 'react';
-import {Popup } from 'semantic-ui-react';
+import { Popup } from 'semantic-ui-react';
 
-export const PopupForm = ({ position, content, trigger }) => (
+export const PopupForm = ({ position, content, trigger, onCloseAction }) => (
     <Popup wide="very"
+        onClose={onCloseAction}
         trigger={
             trigger
         }

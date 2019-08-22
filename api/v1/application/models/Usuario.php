@@ -23,4 +23,14 @@ class Usuario extends BaseModel
         }
     }
 
+    public function persistir($usuario)
+    {
+        return  parent::persiste($usuario, $this->get_tabela());
+    }
+
+    public function remover($usuario)
+    {
+        return  parent::remove($usuario['id'], 'id');
+    }
+
 }

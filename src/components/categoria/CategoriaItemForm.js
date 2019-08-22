@@ -9,7 +9,7 @@ export const CategoriaItemForm = ({ categoria,
         <Form.Group widths="16">
             <Form.Field>
                 <label>Título</label>
-                <input onChange={changeAction}
+                <input name='descricao' onChange={changeAction}
                     placeholder='Título'
                     value={categoria.descricao} />
             </Form.Field>
