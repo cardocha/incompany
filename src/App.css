@@ -3,6 +3,10 @@
   text-align: center;
 }
 
+.inline-block{
+  display: inline-block !important
+}
+
 .fullwidth{
   width: 100% !important;
 }

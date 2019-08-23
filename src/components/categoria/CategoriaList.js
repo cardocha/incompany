@@ -30,13 +30,13 @@ export class CategoriaList extends Component {
     }
 
     async updateCategorias() {
-        this.setState({ carregarCategorias: true })
+       /*  this.setState({ carregarCategorias: true }) */
 
         const categorias = await CategoriaRepository.all()
         this.setState({ updateCategorias: this.state.updateCategorias + 1 })
         this.setState({ categorias: categorias.data })
 
-        this.setState({ carregarCategorias: false })
+        // this.setState({ carregarCategorias: false })
     }
 
     initializeCategoria() {
