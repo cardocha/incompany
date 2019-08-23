@@ -49,13 +49,11 @@ export class Login extends Component {
                         </Menu.Item>
                     </Menu.Menu>
                     <Menu.Menu position="right">
-                        <Menu.Item
-                            name='section1'>
-                            <a target="_blank" href="https://github.com/cardocha/incompany"><Icon name="github"></Icon>source code</a>
+                        <Menu.Item>
+                            <a basic target="_blank" href="https://github.com/cardocha/incompany"><Icon size="large" name="github"></Icon>Código Fonte</a>
                         </Menu.Item>
-                        <Menu.Item
-                            name='section2'>
-                            <a target="_blank" href="https://cardocha.github.io"><Icon name="code"></Icon>Luciano Cardoso</a>
+                        <Menu.Item>
+                            <a target="_blank" href="https://cardocha.github.io"><Icon name="user"></Icon>Luciano Cardoso</a>
                         </Menu.Item>
                     </Menu.Menu>
                 </Menu>
