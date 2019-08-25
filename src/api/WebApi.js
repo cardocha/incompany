@@ -3,10 +3,12 @@ import axios from 'axios'
 export class WebApi {
 
     static create() {
-        return axios.create({
+        const instance = axios.create({
             baseURL: this.getUrl(),
             timeout: 4000
         });
+
+        return instance
     }
 
     static getUrl() {

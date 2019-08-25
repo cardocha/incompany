@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider } from 'semantic-ui-react'
 import { CategoriaRepository } from '../../api/CategoriaRepository';
 import { CategoriaItemForm } from '../categoria/CategoriaItemForm';
-import { toast } from 'react-toastify';
-import {Mensagem} from './../Mensagem'
-import {ValidationErrors} from './../ValidationErrors'
-import 'react-toastify/dist/ReactToastify.css';
 import { PopupForm } from '../PopupForm';
+import { Notificacao } from '../notificacao/Notificacao';
 
 export class CategoriaList extends Component {
     constructor(props) {
@@ -30,7 +27,7 @@ export class CategoriaList extends Component {
     }
 
     async updateCategorias() {
-       /*  this.setState({ carregarCategorias: true }) */
+        /*  this.setState({ carregarCategorias: true }) */
 
         const categorias = await CategoriaRepository.all()
         this.setState({ updateCategorias: this.state.updateCategorias + 1 })
@@ -69,18 +66,11 @@ export class CategoriaList extends Component {
     }
 
     setStatusRequisicao(resultado) {
-        this.mostrarMensagem(resultado)
+        Notificacao.gerar(resultado)
         if (resultado.data.flag) {
             this.setState({ categoriaSelecionada: this.initializeCategoria() })
             this.updateCategorias()
         }
-    }
-
-    mostrarMensagem(resultado) {
-        const msgs = resultado.data.msg;
-        const elementMsg = resultado.data.flag ? (<Mensagem icon='check' msg={msgs} />) : (<ValidationErrors erros={msgs} />)
-        const msgType = resultado.data.flag ? toast.TYPE.INFO : toast.TYPE.WARNING;
-        toast(elementMsg, { type: msgType });
     }
 
     async salvarCategoria() {

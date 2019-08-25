@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider } from 'semantic-ui-react'
 import { UsuarioRepository } from '../../api/UsuarioRepository';
-import { CategoriaItemForm } from '../categoria/CategoriaItemForm';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { PopupForm } from '../PopupForm';
 import { UsuarioItemForm } from './UsuarioItemForm';
-import { ValidationErrors } from '../ValidationErrors';
-import { Mensagem } from '../Mensagem';
+import { Notificacao } from '../notificacao/Notificacao';
 
 export class UsuarioList extends Component {
     constructor(props) {
@@ -31,13 +27,13 @@ export class UsuarioList extends Component {
     }
 
     async updateUsuarios() {
-       /*  this.setState({ carregarUsuarios: true }) */
-       
+        /*  this.setState({ carregarUsuarios: true }) */
+
         const usuarios = await UsuarioRepository.all()
         this.setState({ updateUsuarios: this.state.updateUsuarios + 1 })
         this.setState({ usuarios: usuarios.data })
 
-       /*  this.setState({ carregarUsuarios: false }) */
+        /*  this.setState({ carregarUsuarios: false }) */
     }
 
     initializeUsuario() {
@@ -59,7 +55,7 @@ export class UsuarioList extends Component {
         this.setState({ usuarioSelecionado: usuario })
     }
 
-    handleOncloseChange(e, obj){
+    handleOncloseChange(e, obj) {
         this.updateUsuarios()
     }
 
@@ -70,22 +66,14 @@ export class UsuarioList extends Component {
             if (acao === "R") {
                 this.removerUsuario()
             }
-
     }
 
     setStatusRequisicao(resultado) {
-        this.mostrarMensagem(resultado)
+        Notificacao.gerar(resultado)
         if (resultado.data.flag) {
             this.setState({ categoriaSelecionada: this.initializeUsuario() })
             this.updateUsuarios()
         }
-    }
-
-    mostrarMensagem(resultado) {
-        const msgs = resultado.data.msg;
-        const elementMsg = resultado.data.flag ? (<Mensagem icon='check' msg={msgs} />) : (<ValidationErrors erros={msgs} />)
-        const msgType = resultado.data.flag ? toast.TYPE.INFO : toast.TYPE.WARNING;
-        toast(elementMsg, { type: msgType });
     }
 
     async salvarUsuario() {

@@ -1,24 +1,16 @@
-import cursos from './cursos-data.json'
-
+import { WebApi } from './WebApi';
 export class CursoRepository {
+
     static all() {
-        return new Promise((resolve, reject) => {
-            if (cursos) {
-                resolve(cursos);
-            } else {
-                reject();
-            }
-        })
+        return WebApi.create().get('cursos')
     }
 
-    static findById(id) {
-        return new Promise((resolve, reject) => {
-            const curso = cursos.items.find(c => c.id === parseInt(id))
-            if (curso) {
-                resolve(curso);
-            } else {
-                reject();
-            }
-        })
+    static save(curso) {
+        return WebApi.create().post('cursos', curso)
     }
+
+    static remove(curso) {
+        return WebApi.create().delete('cursos', { "data": curso })
+    }
+
 }

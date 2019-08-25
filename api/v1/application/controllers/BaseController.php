@@ -16,17 +16,23 @@ abstract class BaseController extends CI_Controller
 
     public function detectar_acao()
     {
+        
         $method = $_SERVER["REQUEST_METHOD"];
-        $json_str = file_get_contents('php://input');
-        $json_obj = json_decode($json_str);
+        $registro = $this->get_dados();
 
         if ($method === "DELETE") {
-            $this->remover($json_obj);
+            $this->remover($registro);
         } elseif ($method === "POST") {
-            $this->persistir($json_obj);
+            $this->persistir($registro);
         }
         
         return $method;
+    }
+
+    public function get_dados(){
+        $json_str = file_get_contents('php://input');
+        $registro = json_decode($json_str);
+        return $registro;
     }
 
     abstract protected function persistir($categoria);

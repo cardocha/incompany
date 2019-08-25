@@ -1,14 +1,55 @@
 import React, { Component } from 'react';
+import {
+    Segment, Form, Checkbox, Button,
+    Icon, Container, Image, Divider,
+    Header, Label, Menu
+} from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css'
 import 'react-toastify/dist/ReactToastify.css';
-import { Segment, Form, Checkbox, Button, Icon, Container, Image, Divider, Header, Label, Menu } from 'semantic-ui-react';
 import './login.css'
 import { WebApi } from '../../api/WebApi';
+import { UsuarioRepository } from '../../api/UsuarioRepository';
+import { Notificacao } from '../notificacao/Notificacao';
 
 export class Login extends Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            usuario: this.initializeUsuario(),
+            logando: false
+        }
+
+        this.login = this.login.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+    }
+
+    handleChange(e, obj) {
+        const element = obj !== undefined ? obj : e.target
+        const usuario = this.state.usuario
+        usuario[element.name] = element.value
+        this.setState({ usuario: usuario })
+    }
+
+    async componentDidMount() {
+        this.setState({ usuario: this.initializeUsuario() })
+    }
+
+    async login() {
+        this.setState({ logando: true })
+
+        const resultado = await UsuarioRepository.login(this.state.usuario)
+        console.log(resultado)
+        Notificacao.gerar(resultado)
+
+        this.setState({ logando: false })
+    }
+
+    initializeUsuario() {
+        return {
+            email: '',
+            senha: ''
+        }
     }
 
     render() {
@@ -16,7 +57,7 @@ export class Login extends Component {
             <Container textAlign="center">
                 <Divider></Divider>
                 <Divider hidden />
-                <Image centered="true" size='tiny' className="inline-block" src={WebApi.getUrl() + 'assets/images/incompany.png'} />
+                <Image centered size='tiny' className="inline-block" src={WebApi.getUrl() + 'assets/images/incompany.png'} />
                 <Header>Incompany
                      <Label basic> Trainning app</Label>
                 </Header>
@@ -24,16 +65,16 @@ export class Login extends Component {
                     <Form>
                         <Form.Field>
                             <label>E-mail</label>
-                            <input size="small" name="email" type="text" placeholder="E-mail" />
+                            <input onChange={this.handleChange} size="small" name="email" type="text" placeholder="E-mail" />
                         </Form.Field>
                         <Form.Field>
                             <label>Senha</label>
-                            <input size="small" name="senha" type="password" placeholder="Senha" />
+                            <input onChange={this.handleChange} size="small" name="senha" type="password" placeholder="Senha" />
                         </Form.Field>
                         <Form.Field>
                             <Checkbox label="Manter conectado"></Checkbox>
                         </Form.Field>
-                        <Button size="small" floated="right" basic><Icon name="key"></Icon> Entrar</Button>
+                        <Button disabled={this.state.logando} loading={this.state.logando} onClick={this.login} size="small" floated="right" basic><Icon name="key"></Icon> Entrar</Button>
                     </Form>
                 </Segment>
                 <Divider></Divider>
@@ -41,19 +82,19 @@ export class Login extends Component {
                     <Menu.Menu position="left">
                         <Menu.Item
                             name='section1'>
-                            Feito utilizando &nbsp;&nbsp;
-                            <a target="_blank" href="https://react.io"><Icon size="big" size="big" name="react"></Icon></a>
-                            <a target="_blank" href="https://codeigniter.com">
-                                <Image centered="true" className="inline-block" src={WebApi.getUrl() + 'assets/images/codeigniter.png'} />
+                            Desenvolvido utilizando &nbsp;&nbsp;
+                            <a target="_blank" rel="noopener noreferrer" href="https://react.io"><Icon size="big" name="react"></Icon></a>
+                            <a target="_blank" rel="noopener noreferrer" href="https://codeigniter.com">
+                                <Image centered className="inline-block" src={WebApi.getUrl() + 'assets/images/codeigniter.png'} />
                             </a>
                         </Menu.Item>
                     </Menu.Menu>
                     <Menu.Menu position="right">
                         <Menu.Item>
-                            <a basic target="_blank" href="https://github.com/cardocha/incompany"><Icon size="large" name="github"></Icon>Código Fonte</a>
+                            <a target="_blank" rel="noopener noreferrer" href="https://github.com/cardocha/incompany"><Icon size="large" name="github"></Icon>Código Fonte</a>
                         </Menu.Item>
                         <Menu.Item>
-                            <a target="_blank" href="https://cardocha.github.io"><Icon name="user"></Icon>Luciano Cardoso</a>
+                            <a target="_blank" rel="noopener noreferrer" href="https://cardocha.github.io"><Icon name="user"></Icon>Luciano Cardoso</a>
                         </Menu.Item>
                     </Menu.Menu>
                 </Menu>

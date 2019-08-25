@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Header, Label, Icon, List, Button } from 'semantic-ui-react';
+import { Modal, Icon, List, Button } from 'semantic-ui-react';
 import { QuestaoItem } from './QuestaoItem'
 import { Link } from 'react-router-dom'
 

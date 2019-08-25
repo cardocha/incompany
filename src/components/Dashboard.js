@@ -19,7 +19,7 @@ export class Dashboard extends Component {
 
     async componentDidMount() {
         const cursos = await CursoRepository.all()
-        this.setState({ cursos: cursos.items })
+        this.setState({ cursos: cursos.data })
         this.setState({ usuarioLogado: this.initializeUsuarioLogado() })
     }
 
