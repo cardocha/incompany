@@ -17,7 +17,8 @@ class Login extends BaseController {
         $validacao = $this->valida($usuario);
         $info_conexao = $_SERVER['HTTP_USER_AGENT'];
         $usuario_recuperado = null;
-        $token = null;
+        $auth = new stdClass();
+        $auth->token = null;
         
         if(!$validacao){
             $msg = parent::get_errors();
@@ -26,18 +27,21 @@ class Login extends BaseController {
             $usuario_recuperado = $this->usuario->get_registro_por_email($usuario->email);
             $senha = $usuario->_;
             if(strpos(strtoupper($senha), $usuario_recuperado['senha']) !== false )
-            {
-                $token = gerar_token($usuario_recuperado);
+            { 
+                $auth->token = strtoupper(gerar_token($usuario_recuperado));
+                $auth->nome = $usuario_recuperado['nome'];
+                $auth->email = $usuario_recuperado['email'];
+                $auth->id = $usuario_recuperado['id'];
                 $msg = "Login realizado";
             }
             else
-                $token = FALSE;
+                $auth->token = FALSE;
         }
         
-        if($token === FALSE)
+        if($auth->token === FALSE)
             $msg = "Usuário ou senha inválidos.";
               
-        echo parent::resposta_json(boolval($token), $msg, $token);
+        echo parent::resposta_json(boolval($auth->token), $msg, $auth);
     }
     
     private function valida($usuario)
@@ -47,7 +51,7 @@ class Login extends BaseController {
         $validacao->set_rules('_', 'Senha', array('required'));
         return $validacao->run();
     }
-
+    
     protected function persistir($registro){}
     protected function remover($registro){}
 

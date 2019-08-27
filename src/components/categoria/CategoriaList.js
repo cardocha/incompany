@@ -62,7 +62,6 @@ export class CategoriaList extends Component {
             if (acao === "R") {
                 this.removerCategoria()
             }
-
     }
 
     setStatusRequisicao(resultado) {

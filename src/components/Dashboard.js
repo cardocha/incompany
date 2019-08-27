@@ -1,48 +1,28 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../api/CursoRepository';
-import { CursoItem } from './curso/CursoItem';
-import { Segment, List, Label, Icon, Header } from 'semantic-ui-react'
 import 'react-toastify/dist/ReactToastify.css';
 import { CategoriaList } from './categoria/CategoriaList';
 import { UsuarioList } from './usuario/UsuarioList';
 import { BarraTopo } from './BarraTopo';
+import { CursoList } from './curso/CursoList';
 
 export class Dashboard extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            cursos: [],
-            usuarioLogado: {}
+            cursos: []
         }
     }
 
     async componentDidMount() {
-        const cursos = await CursoRepository.all()
-        this.setState({ cursos: cursos.data })
-        this.setState({ usuarioLogado: this.initializeUsuarioLogado() })
-    }
-
-    initializeUsuarioLogado() {
-        return {
-            id: 1,
-            nome: "Jorversley Riquelme"
-        }
     }
 
     render() {
         return (
             <div>
-                <BarraTopo usuario={this.state.usuarioLogado}></BarraTopo>
-                <Segment>
-                    <Header className="header-listagem" textAlign="center" size="tiny">Cursos</Header>
-                    <Label basic attached="top left"><Icon name='add' />Adicionar</Label>
-                    <List horizontal animated verticalAlign='middle'>
-                        {this.state.cursos.map(c => (
-                            <CursoItem key={c.id} curso={c} />
-                        ))}
-                    </List>
-                </Segment>
+                <BarraTopo auth={this.props.auth}></BarraTopo>
+                <CursoList  ></CursoList>
                 <UsuarioList></UsuarioList>
                 <CategoriaList></CategoriaList>
             </div>

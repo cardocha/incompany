@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Segment, Form, Checkbox, Button,
+    Segment, Form, Button,
     Icon, Container, Image, Divider,
     Header, Label, Menu
 } from 'semantic-ui-react';
@@ -10,6 +10,7 @@ import './login.css'
 import { WebApi } from '../../api/WebApi';
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { Notificacao } from '../notificacao/Notificacao';
+import { Dashboard } from '../Dashboard';
 
 export class Login extends Component {
 
@@ -17,7 +18,9 @@ export class Login extends Component {
         super(props)
         this.state = {
             usuario: this.initializeUsuario(),
-            logando: false
+            logando: false,
+            auth: null
+
         }
 
         this.login = this.login.bind(this)
@@ -37,12 +40,13 @@ export class Login extends Component {
 
     async login() {
         this.setState({ logando: true })
-
         const resultado = await UsuarioRepository.login(this.state.usuario)
-        console.log(resultado)
-        Notificacao.gerar(resultado)
-
         this.setState({ logando: false })
+
+        if (resultado.data.flag)
+            this.setState({ auth: resultado.data.obj })
+        else
+            Notificacao.gerar(resultado)
     }
 
     initializeUsuario() {
@@ -53,52 +57,51 @@ export class Login extends Component {
     }
 
     render() {
-        return (
-            <Container textAlign="center">
-                <Divider></Divider>
-                <Divider hidden />
-                <Image centered size='tiny' className="inline-block" src={WebApi.getUrl() + 'assets/images/incompany.png'} />
-                <Header>Incompany
+        return this.state.auth == null ?
+            (
+                <Container textAlign="center">
+                    {this.redirectToDashBoard}
+                    <Divider></Divider>
+                    <Divider hidden />
+                    <Image centered size='tiny' className="inline-block" src={WebApi.getUrl() + 'assets/images/incompany.png'} />
+                    <Header>Incompany
                      <Label basic> Trainning app</Label>
-                </Header>
-                <Segment compact textAlign="left" className="inline-block">
-                    <Form>
-                        <Form.Field>
-                            <label>E-mail</label>
-                            <input onChange={this.handleChange} size="small" name="email" type="text" placeholder="E-mail" />
-                        </Form.Field>
-                        <Form.Field>
-                            <label>Senha</label>
-                            <input onChange={this.handleChange} size="small" name="senha" type="password" placeholder="Senha" />
-                        </Form.Field>
-                        <Form.Field>
-                            <Checkbox label="Manter conectado"></Checkbox>
-                        </Form.Field>
-                        <Button disabled={this.state.logando} loading={this.state.logando} onClick={this.login} size="small" floated="right" basic><Icon name="key"></Icon> Entrar</Button>
-                    </Form>
-                </Segment>
-                <Divider></Divider>
-                <Menu secondary>
-                    <Menu.Menu position="left">
-                        <Menu.Item
-                            name='section1'>
-                            Desenvolvido utilizando &nbsp;&nbsp;
+                    </Header>
+                    <Segment compact textAlign="left" className="inline-block">
+                        <Form>
+                            <Form.Field>
+                                <label>E-mail</label>
+                                <input onChange={this.handleChange} size="small" name="email" type="text" placeholder="E-mail" />
+                            </Form.Field>
+                            <Form.Field>
+                                <label>Senha</label>
+                                <input onChange={this.handleChange} size="small" name="senha" type="password" placeholder="Senha" />
+                            </Form.Field>
+                            <Button disabled={this.state.logando} loading={this.state.logando} onClick={this.login} size="small" floated="right" basic><Icon name="key"></Icon> Entrar</Button>
+                        </Form>
+                    </Segment>
+                    <Divider></Divider>
+                    <Menu secondary>
+                        <Menu.Menu position="left">
+                            <Menu.Item
+                                name='section1'>
+                                Desenvolvido utilizando &nbsp;&nbsp;
                             <a target="_blank" rel="noopener noreferrer" href="https://react.io"><Icon size="big" name="react"></Icon></a>
-                            <a target="_blank" rel="noopener noreferrer" href="https://codeigniter.com">
-                                <Image centered className="inline-block" src={WebApi.getUrl() + 'assets/images/codeigniter.png'} />
-                            </a>
-                        </Menu.Item>
-                    </Menu.Menu>
-                    <Menu.Menu position="right">
-                        <Menu.Item>
-                            <a target="_blank" rel="noopener noreferrer" href="https://github.com/cardocha/incompany"><Icon size="large" name="github"></Icon>Código Fonte</a>
-                        </Menu.Item>
-                        <Menu.Item>
-                            <a target="_blank" rel="noopener noreferrer" href="https://cardocha.github.io"><Icon name="user"></Icon>Luciano Cardoso</a>
-                        </Menu.Item>
-                    </Menu.Menu>
-                </Menu>
-            </Container>
-        )
+                                <a target="_blank" rel="noopener noreferrer" href="https://codeigniter.com">
+                                    <Image centered className="inline-block" src={WebApi.getUrl() + 'assets/images/codeigniter.png'} />
+                                </a>
+                            </Menu.Item>
+                        </Menu.Menu>
+                        <Menu.Menu position="right">
+                            <Menu.Item>
+                                <a target="_blank" rel="noopener noreferrer" href="https://github.com/cardocha/incompany"><Icon size="large" name="github"></Icon>Código Fonte</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a target="_blank" rel="noopener noreferrer" href="https://cardocha.github.io"><Icon name="user"></Icon>Luciano Cardoso</a>
+                            </Menu.Item>
+                        </Menu.Menu>
+                    </Menu>
+                </Container>
+            ) : <Dashboard auth={this.state.auth}></Dashboard>
     };
 }

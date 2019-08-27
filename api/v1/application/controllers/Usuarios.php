@@ -21,7 +21,7 @@ class Usuarios extends BaseController {
         }
     }
     
-     private function valida($usuario, $edicao)
+    private function valida($usuario, $edicao)
     {
         $validacao = parent::get_validador($usuario);
         $validacao->set_rules('nome', 'Nome', 'required');

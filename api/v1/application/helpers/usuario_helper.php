@@ -25,7 +25,7 @@ if (!function_exists('gerar_token')) {
         $token = null;
         $info_conexao = $_SERVER['HTTP_USER_AGENT'];
         if($usuario_recuperado)
-            $token = md5($usuario_recuperado['email'].$usuario_recuperado['senha'].$info_conexao);
+            $token = hash('sha256', $usuario_recuperado['email'].$usuario_recuperado['senha'].$info_conexao);
 
         return $token;
     }
