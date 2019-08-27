@@ -12,8 +12,7 @@ export class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            cursos: [],
-            auth: Auth.get()
+            cursos: []
         }
     }
 
@@ -25,6 +24,7 @@ export class Dashboard extends Component {
     }
 
     render() {
+        console.log(Auth.get())
         return Auth.get() !== null ?
             (
                 <div>

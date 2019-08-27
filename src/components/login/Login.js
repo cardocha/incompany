@@ -21,7 +21,7 @@ export class Login extends Component {
         this.state = {
             usuario: this.initializeUsuario(),
             logando: false,
-            auth: null
+            auth: Auth.get()
         }
 
         this.login = this.login.bind(this)
@@ -36,7 +36,6 @@ export class Login extends Component {
     }
 
     async componentDidMount() {
-        console.log(this.props.auth)
         this.setState({ usuario: this.initializeUsuario() })
     }
 
@@ -46,8 +45,8 @@ export class Login extends Component {
         this.setState({ logando: false })
 
         if (resultado.data.flag) {
-            this.setState({ auth: resultado.data.obj })
             Auth.save(resultado)
+            this.setState({ auth: resultado.data.obj })   
         }
         else
             Notificacao.gerar(resultado)
@@ -61,7 +60,7 @@ export class Login extends Component {
     }
 
     render() {
-        return Auth.get() == null ?
+        return this.state.auth === null ?
             (
                 <Container textAlign="center">
                     {this.redirectToDashBoard}
