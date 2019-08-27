@@ -21,10 +21,10 @@ export const CursoItemForm = ({ curso,
         <Form.Field>
             <label>Nome Tutor</label>
             <input placeholder='Nome do Tutor'
-                name="nomeTutor"
+                name="nome_tutor"
                 type="text"
                 onChange={changeAction}
-                value={curso.nomeTutor} />
+                value={curso.nome_tutor} />
         </Form.Field>
         <label>&nbsp;</label>
         <Button floated="right" onClick={() => onClickAction('AE')} icon="check" basic></Button>

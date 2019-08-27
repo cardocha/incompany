@@ -7,6 +7,7 @@ import { CursoItemForm } from './../curso/CursoItemForm'
 import 'react-toastify/dist/ReactToastify.css';
 import { CategoriaRepository } from '../../api/CategoriaRepository';
 import { Notificacao } from '../notificacao/Notificacao';
+import { Auth } from '../../api/Auth';
 
 export class CursoList extends Component {
 
@@ -15,6 +16,7 @@ export class CursoList extends Component {
         this.state = {
             cursos: [],
             cursoSelecionado: this.initializeCurso(),
+            updateCursos: 1,
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleClick = this.handleClick.bind(this)
@@ -38,8 +40,9 @@ export class CursoList extends Component {
         return {
             id: 0,
             titulo: '',
-            nomeTutor: '',
-            categoria_id: 0
+            nome_tutor: '',
+            categoria_id: 0,
+            usuario_id:0
         }
     }
 
@@ -51,6 +54,7 @@ export class CursoList extends Component {
         const element = obj !== undefined ? obj : e.target
         const curso = this.state.cursoSelecionado
         curso[element.name] = element.value
+        curso.usuario_id = Auth.get().id
         this.setState({ cursoSelecionado: curso })
     }
 
@@ -92,7 +96,7 @@ export class CursoList extends Component {
     render() {
         return (
             <div>
-                <Segment>
+                <Segment key={this.state.updateCursos}>
                     <PopupForm
                         trigger={
                             <Button basic
