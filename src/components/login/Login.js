@@ -11,16 +11,17 @@ import { WebApi } from '../../api/WebApi';
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { Dashboard } from '../Dashboard';
+import { Auth } from '../../api/Auth';
 
 export class Login extends Component {
 
     constructor(props) {
         super(props)
+        
         this.state = {
             usuario: this.initializeUsuario(),
             logando: false,
             auth: null
-
         }
 
         this.login = this.login.bind(this)
@@ -35,6 +36,7 @@ export class Login extends Component {
     }
 
     async componentDidMount() {
+        console.log(this.props.auth)
         this.setState({ usuario: this.initializeUsuario() })
     }
 
@@ -43,8 +45,10 @@ export class Login extends Component {
         const resultado = await UsuarioRepository.login(this.state.usuario)
         this.setState({ logando: false })
 
-        if (resultado.data.flag)
+        if (resultado.data.flag) {
             this.setState({ auth: resultado.data.obj })
+            Auth.save(resultado)
+        }
         else
             Notificacao.gerar(resultado)
     }
@@ -57,7 +61,7 @@ export class Login extends Component {
     }
 
     render() {
-        return this.state.auth == null ?
+        return Auth.get() == null ?
             (
                 <Container textAlign="center">
                     {this.redirectToDashBoard}
@@ -102,6 +106,6 @@ export class Login extends Component {
                         </Menu.Menu>
                     </Menu>
                 </Container>
-            ) : <Dashboard auth={this.state.auth}></Dashboard>
+            ) : <Dashboard></Dashboard>
     };
 }

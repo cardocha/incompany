@@ -5,27 +5,34 @@ import { CategoriaList } from './categoria/CategoriaList';
 import { UsuarioList } from './usuario/UsuarioList';
 import { BarraTopo } from './BarraTopo';
 import { CursoList } from './curso/CursoList';
+import { Auth } from '../api/Auth';
 
 export class Dashboard extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            cursos: []
+            cursos: [],
+            auth: Auth.get()
         }
+    }
+
+    sair() {
+        Auth.clear()
     }
 
     async componentDidMount() {
     }
 
     render() {
-        return (
-            <div>
-                <BarraTopo auth={this.props.auth}></BarraTopo>
-                <CursoList  ></CursoList>
-                <UsuarioList></UsuarioList>
-                <CategoriaList></CategoriaList>
-            </div>
-        );
+        return Auth.get() !== null ?
+            (
+                <div>
+                    <BarraTopo sairAction={this.sair} auth={Auth.get()}></BarraTopo>
+                    <CursoList  ></CursoList>
+                    <UsuarioList></UsuarioList>
+                    <CategoriaList></CategoriaList>
+                </div>
+            ) : ''
     }
 }
