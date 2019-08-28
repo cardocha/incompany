@@ -22,6 +22,10 @@ class Curso extends BaseModel
         return $query->result_array();
     }
 
+    public function get_por_id($id){
+        return (object) parent::get_registro_por_id($id);
+    }
+
     public function persistir($curso)
     {
         return  parent::persiste($curso, $this->get_tabela());

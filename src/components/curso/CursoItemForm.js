@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Button, Header, Dropdown } from 'semantic-ui-react';
-
+import { Link } from 'react-router-dom'
 
 export const CursoItemForm = ({ curso,
     titulo, onClickAction, changeAction, categorias }) =>
@@ -31,6 +31,9 @@ export const CursoItemForm = ({ curso,
         <label>&nbsp;</label>
         {
             titulo.includes('Edição') ?
-                <Button onClick={() => onClickAction('R')} icon="close" basic></Button> : ''
+                <Button.Group basic>
+                    <Button onClick={() => onClickAction('R')} icon="close" ></Button>
+                    <Link to={`/cursos/${curso.id}`}><Button onClick={() => onClickAction('E')} icon="pencil" ></Button></Link>
+                </Button.Group> : ''
         }
     </Form>

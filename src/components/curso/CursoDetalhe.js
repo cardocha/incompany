@@ -1,28 +1,59 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository';
-import { Segment, Form, Button, Divider, Accordion, Header, Label, Icon, Popup, Input, Dropdown, List } from 'semantic-ui-react';
+import {
+    Segment, Form, Button, Divider, Accordion,
+    Header, Label, Icon,
+    Popup, Input, Dropdown, List
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom'
 import './curso-detalhe.css'
 import { MaterialList } from '../material/MaterialList';
+import { Auth } from '../../api/Auth';
+import { CategoriaRepository } from '../../api/CategoriaRepository';
 
 export class CursoDetalhe extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {}
-        this.handleChange = this.handleChange.bind(this);
+        this.state = {
+            cursoSelecionado: {},
+            unidades: []
+        }
+        this.handleChange = this.handleChange.bind(this)
+        this.handleClick = this.handleClick.bind(this)
     }
 
     async componentDidMount() {
         const curso = await CursoRepository.findById(this.props.match.params.id)
-        this.setState({ curso })
-        this.setState({ unidades: this.buildUnidades(curso) })
-        this.setState({ titulo: curso.titulo })
-        this.setState({ nomeTutor: curso.nomeTutor })
+        const categorias = await CategoriaRepository.all();
+        this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
+        this.setState({ cursoSelecionado: curso.data })
+        this.setState({ unidades: this.buildUnidades(curso.data) })
     }
 
-    handleChange(e) {
-        this.setState({ titulo: e.target.value });
+    buildDropdownItensCategoria(categorias) {
+        let categoriasItens = []
+        categorias.map(categoria => {
+            return categoriasItens.push({ key: categoria.id, text: categoria.descricao, value: categoria.id })
+        })
+        return categoriasItens
+    }
+
+    handleChange(e, obj) {
+        const element = obj !== undefined ? obj : e.target
+        const curso = this.state.cursoSelecionado
+        curso[element.name] = element.value
+        curso.usuario_id = Auth.get().id
+        this.setState({ cursoSelecionado: curso })
+    }
+
+    handleClick(acao) {
+        if (acao === "AE") {
+            this.salvarCurso()
+        } else
+            if (acao === "R") {
+                this.removerCurso()
+            }
     }
 
     getTags() {
@@ -66,19 +97,26 @@ export class CursoDetalhe extends Component {
                         <Form.Field width={6} >
                             <label>Título</label>
                             <input placeholder='Título'
+                                name="titulo"
                                 type="text"
-                                value={this.state.titulo}
+                                value={this.state.cursoSelecionado.titulo}
                                 onChange={this.handleChange} />
                         </Form.Field>
                         <Form.Field width={5}>
                             <label>Categoria</label>
-                            <Dropdown clearable options={this.getCategorias()} selection />
+                            <Dropdown clearable
+                                name='categoria_id'
+                                value={this.state.cursoSelecionado.categoria_id}
+                                onChange={this.handleChange} 
+                                options={this.state.categorias} selection />
                         </Form.Field>
                         <Form.Field width={5}>
                             <label>Nome Tutor</label>
                             <input placeholder='Nome do Tutor'
+                                name="nome_tutor"
                                 type="text"
-                                defaultValue={this.state.nomeTutor} />
+                                onChange={this.handleChange}
+                                value={this.state.cursoSelecionado.nome_tutor} />
                         </Form.Field>
                         <Form.Field width={4}>
                             <label>Tags</label>

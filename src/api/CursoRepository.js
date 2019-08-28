@@ -13,4 +13,7 @@ export class CursoRepository {
         return WebApi.create().delete('cursos', { "data": curso })
     }
 
+    static findById(id) {
+        return WebApi.create().get(`cursos/${id}`)
+    }
 }

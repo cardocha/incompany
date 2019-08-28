@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository'
-import { CursoItem } from './CursoItem';
-import { Segment, List, Icon, Header, Button } from 'semantic-ui-react'
+import { Segment, List, Icon, Header, Button, Divider, Label } from 'semantic-ui-react'
 import { PopupForm } from './../PopupForm'
 import { CursoItemForm } from './../curso/CursoItemForm'
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,8 +17,12 @@ export class CursoList extends Component {
             cursoSelecionado: this.initializeCurso(),
             updateCursos: 1,
         }
+
         this.handleChange = this.handleChange.bind(this)
         this.handleClick = this.handleClick.bind(this)
+        this.editarCurso = this.editarCurso.bind(this)
+        this.limparSelecao = this.limparSelecao.bind(this)
+        this.handleOncloseChange = this.handleOncloseChange.bind(this)
     }
 
     async componentDidMount() {
@@ -31,7 +34,7 @@ export class CursoList extends Component {
     buildDropdownItensCategoria(categorias) {
         let categoriasItens = []
         categorias.map(categoria => {
-           return categoriasItens.push({ key: categoria.id, text: categoria.descricao, value: categoria.id })
+            return categoriasItens.push({ key: categoria.id, text: categoria.descricao, value: categoria.id })
         })
         return categoriasItens
     }
@@ -42,7 +45,7 @@ export class CursoList extends Component {
             titulo: '',
             nome_tutor: '',
             categoria_id: 0,
-            usuario_id:0
+            usuario_id: 0
         }
     }
 
@@ -56,6 +59,10 @@ export class CursoList extends Component {
         curso[element.name] = element.value
         curso.usuario_id = Auth.get().id
         this.setState({ cursoSelecionado: curso })
+    }
+
+    handleOncloseChange(e, obj) {
+        this.updateCursos()
     }
 
     async updateCursos() {
@@ -76,12 +83,24 @@ export class CursoList extends Component {
         }
     }
 
+    selectCurso(curso) {
+        this.setState({ cursoSelecionado: curso })
+    }
+
     async salvarCurso() {
         this.setStatusRequisicao(await CursoRepository.save(this.state.cursoSelecionado));
     }
 
     async removerCurso() {
         this.setStatusRequisicao(await CursoRepository.remove(this.state.cursoSelecionado));
+    }
+
+    editarCurso() {
+        this.props.hideDashBoard()
+    }
+
+    limparSelecao() {
+        this.setState({ cursoSelecionado: this.initializeCurso() })
     }
 
     handleClick(acao) {
@@ -91,6 +110,9 @@ export class CursoList extends Component {
             if (acao === "R") {
                 this.removerCurso()
             }
+            else if (acao === "E") {
+                this.editarCurso()
+            }
     }
 
     render() {
@@ -98,9 +120,10 @@ export class CursoList extends Component {
             <div>
                 <Segment key={this.state.updateCursos}>
                     <PopupForm
+                        onCloseAction={this.handleOncloseChange}
                         trigger={
                             <Button basic
-                                onClick={this.limpaSelecaoCurso}
+                                onClick={this.limparSelecao}
                                 className="pointer"
                                 as="a"
                                 floated="left"
@@ -120,7 +143,33 @@ export class CursoList extends Component {
                     <Header className="header-listagem" textAlign="center" size="tiny">Cursos</Header>
                     <List horizontal animated verticalAlign='middle'>
                         {this.state.cursos.map(c => (
-                            <CursoItem key={c.id} curso={c} />
+                            <List.Item key={c.id} >
+                                <PopupForm
+                                    trigger={
+                                        <Button onClick={() => this.selectCurso(c)} className="botao-item-sistema" basic>
+                                            <List.Content>
+                                                <Segment compact basic>
+                                                    <Icon name='grid layout' size='big' />
+                                                    <List.Header className="nome-list">{c.titulo}</List.Header>
+                                                    <Divider></Divider>
+                                                    <Label size="mini" basic>
+                                                        <Icon name='cube' /> {c.nome_tutor}
+                                                    </Label>
+                                                </Segment>
+                                            </List.Content>
+                                        </Button>
+                                    }
+                                    position="left center"
+                                    content={
+                                        <CursoItemForm
+                                            titulo={"Edição de Curso"}
+                                            categorias={this.state.categorias}
+                                            curso={this.state.cursoSelecionado}
+                                            changeAction={this.handleChange}
+                                            onClickAction={this.handleClick}>
+                                        </CursoItemForm>}
+                                ></PopupForm>
+                            </List.Item>
                         ))}
                     </List>
                 </Segment>
