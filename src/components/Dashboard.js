@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { CursoRepository } from '../api/CursoRepository';
 import 'react-toastify/dist/ReactToastify.css';
 import { CategoriaList } from './categoria/CategoriaList';
 import { UsuarioList } from './usuario/UsuarioList';

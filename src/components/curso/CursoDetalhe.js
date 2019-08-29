@@ -5,7 +5,7 @@ import {
     Header, Label, Icon,
     Popup, Input, Dropdown, List
 } from 'semantic-ui-react';
-import { Link } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 import './curso-detalhe.css'
 import { MaterialList } from '../material/MaterialList';
 import { Auth } from '../../api/Auth';
@@ -17,10 +17,12 @@ export class CursoDetalhe extends Component {
         super(props)
         this.state = {
             cursoSelecionado: {},
-            unidades: []
+            unidades: [],
+            categorias: []
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleClick = this.handleClick.bind(this)
+        this.backToDashBoard = this.backToDashBoard.bind(this)
     }
 
     async componentDidMount() {
@@ -29,6 +31,7 @@ export class CursoDetalhe extends Component {
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
         this.setState({ cursoSelecionado: curso.data })
         this.setState({ unidades: this.buildUnidades(curso.data) })
+        console.log(this.props)
     }
 
     buildDropdownItensCategoria(categorias) {
@@ -88,6 +91,11 @@ export class CursoDetalhe extends Component {
         return accordionsUnidades;
     }
 
+    backToDashBoard(e) {
+        this.props.location.back()
+        this.props.history.push('/')
+    }
+
     render() {
         return (
             <Segment className="bottom-extended">
@@ -97,18 +105,18 @@ export class CursoDetalhe extends Component {
                         <Form.Field width={6} >
                             <label>Título</label>
                             <input placeholder='Título'
+                                onChange={this.handleChange}
                                 name="titulo"
                                 type="text"
-                                value={this.state.cursoSelecionado.titulo}
-                                onChange={this.handleChange} />
+                                value={this.state.cursoSelecionado.titulo} />
                         </Form.Field>
                         <Form.Field width={5}>
                             <label>Categoria</label>
-                            <Dropdown clearable
+                            <Dropdown selection
+                                onChange={this.handleChange}
                                 name='categoria_id'
                                 value={this.state.cursoSelecionado.categoria_id}
-                                onChange={this.handleChange} 
-                                options={this.state.categorias} selection />
+                                options={this.state.categorias} />
                         </Form.Field>
                         <Form.Field width={5}>
                             <label>Nome Tutor</label>
@@ -144,7 +152,7 @@ export class CursoDetalhe extends Component {
                     <Header className="header-detalhes">Unidades</Header>
                     <Accordion panels={this.state.unidades} styled />
                     <Button.Group floated='right'>
-                        <Link to='/'><Button> <Icon name='arrow left' />Cancelar</Button></Link>
+                        <Button onClick={this.backToDashBoard}> <Icon name='arrow left' />Cancelar</Button>
                         <Button className='button-action-detail'> <Icon name='check' /> Salvar</Button>
                     </Button.Group>
                     <Button.Group floated='left'>

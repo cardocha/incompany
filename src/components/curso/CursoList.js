@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository'
-import { Segment, List, Icon, Header, Button, Divider, Label } from 'semantic-ui-react'
+import { Segment, List, Icon, Header, Button, Divider, Label, Form, Dropdown } from 'semantic-ui-react'
 import { PopupForm } from './../PopupForm'
-import { CursoItemForm } from './../curso/CursoItemForm'
 import 'react-toastify/dist/ReactToastify.css';
 import { CategoriaRepository } from '../../api/CategoriaRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { Auth } from '../../api/Auth';
+import { Link } from "react-router-dom";
 
 export class CursoList extends Component {
 
@@ -23,12 +23,15 @@ export class CursoList extends Component {
         this.editarCurso = this.editarCurso.bind(this)
         this.limparSelecao = this.limparSelecao.bind(this)
         this.handleOncloseChange = this.handleOncloseChange.bind(this)
+        this.showDashBoard = this.showDashBoard.bind(this)
     }
 
     async componentDidMount() {
         this.updateCursos()
         const categorias = await CategoriaRepository.all();
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
+        this.setState({ showDashBoard: this.showDashBoard })
+        this.setState({ hideDashBoard: this.hideDashBoard })
     }
 
     buildDropdownItensCategoria(categorias) {
@@ -99,8 +102,53 @@ export class CursoList extends Component {
         this.props.hideDashBoard()
     }
 
+    showDashBoard() {
+        this.props.showDashBoard()
+    }
+
     limparSelecao() {
         this.setState({ cursoSelecionado: this.initializeCurso() })
+    }
+
+    buildCursoForm(titulo) {
+        return (
+            <Form encType="multipart/form-data">
+                <Header>{titulo}</Header>
+                <Form.Field>
+                    <label>Título</label>
+                    <input placeholder='Título'
+                        name="titulo"
+                        type="text"
+                        value={this.state.cursoSelecionado.titulo}
+                        onChange={this.changeAction} />
+                </Form.Field>
+                <Form.Field>
+                    <label>Categoria</label>
+                    <Dropdown  name="categoria_id" onChange={this.changeAction} value={this.state.cursoSelecionado.categoria_id} options={this.state.categorias}  />
+                </Form.Field>
+                <Form.Field>
+                    <label>Nome Tutor</label>
+                    <input placeholder='Nome do Tutor'
+                        name="nome_tutor"
+                        type="text"
+                        onChange={this.changeAction}
+                        value={this.state.cursoSelecionado.nome_tutor} />
+                </Form.Field>
+                <label>&nbsp;</label>
+                <Button floated="right" onClick={() => this.handleClick('AE')} icon="check" basic></Button>
+                <label>&nbsp;</label>
+                {
+                    titulo.includes('Edição') ?
+                        <Button.Group basic>
+                            <Button onClick={() => this.handleClick('R')} icon="close" ></Button>
+                            <Link to={{
+                                pathname: `/cursos/${this.state.cursoSelecionado.id}`,
+                                back: this.showDashBoard
+                            }}><Button onClick={() => this.handleClick('E')} icon="pencil" ></Button></Link>
+                        </Button.Group> : ''
+                }
+            </Form>
+        )
     }
 
     handleClick(acao) {
@@ -131,14 +179,7 @@ export class CursoList extends Component {
                             </Button>
                         }
                         position="left center"
-                        content={
-                            <CursoItemForm
-                                titulo={"Inclusão de Curso"}
-                                categorias={this.state.categorias}
-                                curso={this.state.cursoSelecionado}
-                                changeAction={this.handleChange}
-                                onClickAction={this.handleClick}>
-                            </CursoItemForm>}
+                        content={this.buildCursoForm("Inclusão de Curso")}
                     ></PopupForm>
                     <Header className="header-listagem" textAlign="center" size="tiny">Cursos</Header>
                     <List horizontal animated verticalAlign='middle'>
@@ -160,14 +201,7 @@ export class CursoList extends Component {
                                         </Button>
                                     }
                                     position="left center"
-                                    content={
-                                        <CursoItemForm
-                                            titulo={"Edição de Curso"}
-                                            categorias={this.state.categorias}
-                                            curso={this.state.cursoSelecionado}
-                                            changeAction={this.handleChange}
-                                            onClickAction={this.handleClick}>
-                                        </CursoItemForm>}
+                                    content={this.buildCursoForm("Edição de Curso")}
                                 ></PopupForm>
                             </List.Item>
                         ))}
