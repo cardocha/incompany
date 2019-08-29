@@ -120,18 +120,18 @@ export class CursoList extends Component {
                         name="titulo"
                         type="text"
                         value={this.state.cursoSelecionado.titulo}
-                        onChange={this.changeAction} />
+                        onChange={this.handleChange} />
                 </Form.Field>
                 <Form.Field>
                     <label>Categoria</label>
-                    <Dropdown  name="categoria_id" onChange={this.changeAction} value={this.state.cursoSelecionado.categoria_id} options={this.state.categorias}  />
+                    <Dropdown selection name="categoria_id" onChange={this.handleChange} value={this.state.cursoSelecionado.categoria_id} options={this.state.categorias} />
                 </Form.Field>
                 <Form.Field>
                     <label>Nome Tutor</label>
                     <input placeholder='Nome do Tutor'
                         name="nome_tutor"
                         type="text"
-                        onChange={this.changeAction}
+                        onChange={this.handleChange}
                         value={this.state.cursoSelecionado.nome_tutor} />
                 </Form.Field>
                 <label>&nbsp;</label>

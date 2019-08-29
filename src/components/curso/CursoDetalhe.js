@@ -5,7 +5,6 @@ import {
     Header, Label, Icon,
     Popup, Input, Dropdown, List
 } from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom'
 import './curso-detalhe.css'
 import { MaterialList } from '../material/MaterialList';
 import { Auth } from '../../api/Auth';
