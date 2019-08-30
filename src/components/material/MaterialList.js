@@ -47,12 +47,12 @@ export class MaterialList extends Component {
     }
 
     isImage(url) {
-        const imageRegex = new RegExp("([^\s]+(\.(?i)(jpg|png|gif|bmp))$)")
+        const imageRegex = new RegExp(/\.(jpg|png|gif|bmp)$/i)
         return imageRegex.test(url);
     }
 
     isCompressed(url) {
-        const imageRegex = new RegExp("([^\s]+(\.(?i)(zip|rar|gz|7z))$)")
+        const imageRegex = new RegExp(/\.(zip|rar|gz|7z)$/i)
         return imageRegex.test(url);
     }
 

@@ -21,7 +21,13 @@ class Cursos extends BaseController
 
     public function lookup($id){
         $curso = $this->curso->get_por_id($id);
-        $curso->unidades = $this->unidade->get_por_curso_id($id);
+        $query_unidades = $this->unidade->get_por_curso_id($id);
+        $unidades = [];
+        foreach($query_unidades as $unidade){
+              $unidade->materiais = $this->material->get_por_unidade_id($unidade->id);
+              $unidades[] = $unidade;
+        }
+        $curso->unidades = $unidades;
         echo json_encode($curso);
     }
 

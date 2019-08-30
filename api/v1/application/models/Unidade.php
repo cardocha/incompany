@@ -15,7 +15,19 @@ class Unidade extends BaseModel
         $this->db->from($this->get_tabela());
         $this->db->where('curso_id', $curso_id);
         $query = $this->db->get();
-        return $query->result_array();
+        return $query->result();
+    }
+
+    public function possui_materiais_vinculados($id)
+    {
+        $this->db->select('count(mat.id)');
+        $this->db->from($this->get_tabela(). " uni");
+        $this->db->join("material mat", "uni.id = mat.unidade_id");
+        $this->db->where('uni.id', $id);
+        $this->db->group_by('uni.id');
+        
+        $query = $this->db->get();
+        return boolval(count($query->result_array()) > 0);
     }
 
     public function persistir($usuario)
