@@ -12,8 +12,7 @@ export class UnidadeList extends Component {
             cursoSelecionado: {},
             unidades: [],
             unidadeSelecionada: this.initializeUnidade(),
-            activeIndex: 0,
-            updateUnidades: 1
+            activeIndex: 0
         }
 
         this.handleChange = this.handleChange.bind(this)
@@ -26,7 +25,7 @@ export class UnidadeList extends Component {
         this.updateUnidades = this.updateUnidades.bind(this)
     }
 
-    async componentDidMount(){
+    async componentDidMount() {
         this.updateUnidades();
     }
 
@@ -43,16 +42,15 @@ export class UnidadeList extends Component {
         if (resultado.data.flag) {
             this.setState({ unidadeSelecionada: this.initializeUnidade() })
             this.updateUnidades()
+            this.props.update()
         }
     }
 
     async updateUnidades() {
-        console.log(this.props)
         if (this.props.curso.id !== undefined) {
             const unidades = await UnidadeRepository.findByCursoId(this.props.curso.id)
-            this.setState({ unidades })
+            this.setState({ unidades: unidades.data })
             this.setState({ cursoSelecionado: this.props.curso })
-            this.setState({ updateUnidades: this.state.updateUnidades + 1 })
         }
     }
 
@@ -100,8 +98,8 @@ export class UnidadeList extends Component {
 
     render() {
         return (
-            <div key={'container-unidades-' + this.state.updateUnidades}>
-                <Accordion key={'lista-unidades' + this.state.updateUnidades} styled>{
+            <div>
+                <Accordion styled>{
                     this.state.unidades && this.state.unidades.map(unidade => (
                         <div key={"unidade-accod-" + unidade.id}>
                             <Accordion.Title

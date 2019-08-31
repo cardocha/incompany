@@ -117,11 +117,14 @@ export class MaterialList extends Component {
 
     render() {
         return (
-            <List celled>
-                {this.renderMateriais(this.state.materiais, "V", "Vídeos")}
-                {this.renderMateriais(this.state.materiais, "D", "Documentos")}
-                {this.renderMateriais(this.state.materiais, "Q", "Questionários")}
-            </List>
+            <div>
+                <Button size="mini" basic >Adicionar Material</Button>
+                <List celled>
+                    {this.renderMateriais(this.state.materiais, "V", "Vídeos")}
+                    {this.renderMateriais(this.state.materiais, "D", "Documentos")}
+                    {this.renderMateriais(this.state.materiais, "Q", "Questionários")}
+                </List>
+            </div>
         )
     }
 }

@@ -128,7 +128,7 @@ export class CursoDetalhe extends Component {
                         </List>
                         <Divider></Divider>
                         <Header className="header-detalhes">Unidades</Header>
-                        <UnidadeList curso={this.state.cursoSelecionado}></UnidadeList>
+                        <UnidadeList update={this.updateCurso.bind(this)} curso={this.state.cursoSelecionado}></UnidadeList>
                         <Button.Group floated='right'>
                             <Button onClick={this.backToDashBoard}> <Icon name='arrow left' />Cancelar</Button>
                             <Button className='button-action-detail'> <Icon name='check' /> Salvar</Button>

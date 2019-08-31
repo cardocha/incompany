@@ -23,7 +23,12 @@ class Unidades extends BaseController
         $method = parent::detectar_acao();
         if ($method === "GET") {
             $resultado_query = $this->unidade->get_por_curso_id($curso_id);
-            echo json_encode($resultado_query);
+            $unidades = [];
+            foreach($resultado_query as $unidade){
+               $unidade->materiais = $this->material->get_por_unidade_id($unidade->id);
+               $unidades[] = $unidade;
+            }
+            echo json_encode($unidades);
         }
     }
 
