@@ -6,33 +6,23 @@ import {
     Popup, Input, Dropdown, List, Container
 } from 'semantic-ui-react';
 import './curso-detalhe.css'
-import { MaterialList } from '../material/MaterialList';
 import { Auth } from '../../api/Auth';
 import { CategoriaRepository } from '../../api/CategoriaRepository';
-import { UnidadeRepository } from '../../api/UnidadeRepository';
-import { Notificacao } from '../notificacao/Notificacao';
+import { UnidadeList } from '../unidade/UnidadeList';
 
 export class CursoDetalhe extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            cursoSelecionado: {},
-            unidadeSelecionada: {},
-            unidades: [],
+            cursoSelecionado: {
+                unidades:[]
+            },
             categorias: [],
-            updateCurso: 1
+            updateCurso: 1,
         }
 
-        this.handleChangeUnidade = this.handleChangeUnidade.bind(this)
-        this.handleClick = this.handleClick.bind(this)
         this.backToDashBoard = this.backToDashBoard.bind(this)
-        this.setStatusRequisicao = this.setStatusRequisicao.bind(this)
-        this.removerUnidade = this.removerUnidade.bind(this)
-        this.salvarUnidade = this.salvarUnidade.bind(this)
-
-        this.limparSelecaoUnidade = this.limparSelecaoUnidade.bind(this)
-        this.handleChange = this.handleChange.bind(this)
     }
 
     async componentDidMount() {
@@ -44,8 +34,6 @@ export class CursoDetalhe extends Component {
         const categorias = await CategoriaRepository.all();
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
         this.setState({ cursoSelecionado: curso.data })
-        this.setState({ unidades: this.buildUnidades(curso.data) })
-        this.setState({ unidadeSelecionada: this.initializeUnidade() })
         this.setState({ updateCurso: this.state.updateCurso + 1 })
     }
 
@@ -80,71 +68,9 @@ export class CursoDetalhe extends Component {
         ]
     }
 
-    buildUnidades(curso) {
-        const accordionsUnidades = []
-        curso.unidades.forEach(unidade => {
-            accordionsUnidades.push({
-                key: unidade.id, title: unidade.titulo, content: {
-                    content: (
-                        <div>
-                            <MaterialList curso={curso} materiais={unidade.materiais}></MaterialList>
-                            <Button.Group floated="right" size="mini" basic>
-                                <Button ><Icon name="pencil"></Icon>Editar {unidade.titulo}</Button>
-                                <Button onClick={() => this.removerUnidade(unidade)} ><Icon name="close"></Icon>Remover {unidade.titulo}</Button>
-                        
-                            </Button.Group>
-                        </div>
-                    )
-                }
-            });
-        });
-        return accordionsUnidades;
-    }
-
-    setStatusRequisicao(resultado) {
-        Notificacao.gerar(resultado)
-        if (resultado.data.flag) {
-            this.setState({ unidadeSelecionada: this.initializeUnidade() })
-            this.updateCurso()
-        }
-    }
-
     backToDashBoard(e) {
         this.props.location.back()
         this.props.history.push('/')
-    }
-
-    async salvarUnidade() {
-        this.setStatusRequisicao(await UnidadeRepository.save(this.state.unidadeSelecionada));
-    }
-
-    async removerUnidade(unidade) {
-        this.setStatusRequisicao(await UnidadeRepository.remove(unidade));
-    }
-
-    initializeUnidade() {
-        return {
-            id: 0,
-            titulo: '',
-        }
-    }
-
-    limparSelecaoUnidade() {
-        this.setState({ unidadeSelecionada: this.initializeUnidade() })
-    }
-
-    handleChangeUnidade(e, obj) {
-        const element = obj !== undefined ? obj : e.target
-        const unidade = this.state.unidadeSelecionada
-        unidade[element.name] = element.value
-        unidade.curso_id = this.state.cursoSelecionado.id
-        this.setState({ unidadeSelecionada: unidade })
-    }
-
-    handleClick(acao) {
-        if (acao === "SU") {
-            this.salvarUnidade()
-        }
     }
 
     render() {
@@ -202,40 +128,10 @@ export class CursoDetalhe extends Component {
                         </List>
                         <Divider></Divider>
                         <Header className="header-detalhes">Unidades</Header>
-                        <Accordion panels={this.state.unidades} styled />
+                        <UnidadeList curso={this.state.cursoSelecionado}></UnidadeList>
                         <Button.Group floated='right'>
                             <Button onClick={this.backToDashBoard}> <Icon name='arrow left' />Cancelar</Button>
                             <Button className='button-action-detail'> <Icon name='check' /> Salvar</Button>
-                        </Button.Group>
-                        <Button.Group floated='left'>
-                            <Popup wide="very"
-                                trigger={
-                                    <Button size="mini" basic>Adicionar Unidade</Button>
-                                }
-                                content={
-                                    <Form>
-                                        <Header>Nova Unidade</Header>
-                                        <Form.Group>
-                                            <Form.Field>
-                                                <label>Título</label>
-                                                <input
-                                                    placeholder='Título'
-                                                    name="titulo"
-                                                    type="text"
-                                                    value={this.state.unidadeSelecionada.titulo}
-                                                    onChange={this.handleChangeUnidade}
-                                                />
-                                            </Form.Field>
-                                            <Form.Field>
-                                                <label>&nbsp;</label>
-                                                <Button onClick={() => this.handleClick('SU')} floated="right" icon="check" basic></Button>
-                                            </Form.Field>
-                                        </Form.Group>
-                                    </Form>
-                                }
-                                on='click'
-                                position='right center'
-                            />
                         </Button.Group>
                     </Form>
                 </Segment>

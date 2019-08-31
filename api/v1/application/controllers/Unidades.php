@@ -19,6 +19,14 @@ class Unidades extends BaseController
         }
     }
 
+    public function lookup($curso_id){
+        $method = parent::detectar_acao();
+        if ($method === "GET") {
+            $resultado_query = $this->unidade->get_por_curso_id($curso_id);
+            echo json_encode($resultado_query);
+        }
+    }
+
     private function valida($unidade, $edicao)
     {
         $validacao = parent::get_validador($unidade);
@@ -63,5 +71,9 @@ class Unidades extends BaseController
              $msg = "Unidade \"".$unidade->titulo."\" possui materiais vinculados";
 
         echo parent::resposta_json($id > 0, $msg, null);
+    }
+
+    public function get_curso_selecionado() {
+        return parent::get_dados();
     }
 }

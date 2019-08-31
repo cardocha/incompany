@@ -53,3 +53,4 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['cursos/(:num)'] = 'cursos/lookup/$1';
+$route['unidades/curso/(:num)'] = 'unidades/lookup/$1';
