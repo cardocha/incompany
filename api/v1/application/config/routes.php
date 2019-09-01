@@ -55,3 +55,4 @@ $route['translate_uri_dashes'] = FALSE;
 $route['cursos/(:num)'] = 'cursos/lookup/$1';
 $route['unidades/curso/(:num)'] = 'unidades/lookup/$1';
 $route['materiais/unidade/(:num)'] = 'materiais/lookup/$1';
+$route['cursos/unidade/(:num)'] = 'materiais/lookup/$1';

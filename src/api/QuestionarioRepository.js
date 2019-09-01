@@ -1,35 +1,19 @@
-import questoes from './questoes-data.json'
-
+import { WebApi } from './WebApi';
 export class QuestionarioRepository {
+
     static all() {
-        return new Promise((resolve, reject) => {
-            if (questoes) {
-                resolve(questoes);
-            } else {
-                reject();
-            }
-        })
+        return WebApi.create().get('questao')
+    }
+
+    static save(curso) {
+        return WebApi.create().post('questao', curso)
+    }
+
+    static remove(curso) {
+        return WebApi.create().delete('questao', { "data": curso })
     }
 
     static findById(id) {
-        return new Promise((resolve, reject) => {
-            const questionario = questoes.items.find(q => q.id === parseInt(id))
-            if (questionario) {
-                resolve(questionario);
-            } else {
-                reject();
-            }
-        })
-    }
-
-    static findAlternativasByQuestionarioId(id) {
-        return new Promise((resolve, reject) => {
-            const questao = questoes.items.find(c => c.id === parseInt(id))
-            if (questao) {
-                resolve(questao.alternativas);
-            } else {
-                reject();
-            }
-        })
+        return WebApi.create().get(`questao/${id}`)
     }
 }

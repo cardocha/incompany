@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button, Icon, Label, Popup, Form, Header } from 'semantic-ui-react'
+import { List, Button, Icon, Label, Popup, Form, Header, Segment } from 'semantic-ui-react'
 import { MaterialItemForm } from './MaterialItemForm';
 import { Link } from 'react-router-dom';
 import { MaterialRepository } from '../../api/MaterialRepository';
@@ -25,8 +25,13 @@ export class MaterialList extends Component {
 
     async updateMateriais() {
         if (this.props.unidadeSelecionada !== undefined) {
-            const materiais = await MaterialRepository.findByUnidadeId(this.props.unidadeSelecionada.id)
-            this.setState({ materiais: materiais.data })
+            const resultado = await MaterialRepository.findByUnidadeId(this.props.unidadeSelecionada.id)
+            let materiais = []
+            resultado.data.map(m => {
+                m.final = m.final === "1"
+                materiais.push(m)
+            })
+            this.setState({ materiais: materiais })
         }
         this.setState({ updateMateriais: this.state.updateMateriais + 1 })
     }
@@ -47,7 +52,8 @@ export class MaterialList extends Component {
             id: 0,
             titulo: '',
             url: '',
-            tipo: ''
+            tipo: '',
+            final: false
         }
     }
 
@@ -56,16 +62,16 @@ export class MaterialList extends Component {
             return "file pdf outline";
 
         if (nomeArquivo.includes(".doc"))
-            return "word pdf outline";
+            return "file word outline";
 
         if (nomeArquivo.includes(".xls"))
-            return "excel pdf outline";
+            return "file excel outline";
 
         if (this.isImage(nomeArquivo))
-            return "file image outline"
+            return "file image"
 
         if (this.isCompressed(nomeArquivo))
-            return "file archive outline"
+            return "file archive"
 
         return "file outline"
     }
@@ -75,6 +81,7 @@ export class MaterialList extends Component {
     }
 
     seleciona(material) {
+        this.setMaterialFinal(material)
         this.setState({ materialSelecionado: material })
     }
 
@@ -111,31 +118,32 @@ export class MaterialList extends Component {
     }
 
     renderMaterial(material) {
-        const botaoEditar = material.tipo === 'Q' ?
-            (<Link to={`/cursos/${this.props.cursoSelecionado.id}/questionario/${material.id}`}>
-                <Button onClick={this.toggleVisibleUnidades.bind(this)} icon="pencil" basic floated="right" size="mini"></Button>
-            </Link>) :
-
-            (<MaterialItemForm
-                material={material}
-                seleciona={this.seleciona}
-                limpa={this.limpaSelecao}
-                titulo={"Editar " + material.titulo}
-                icon="pencil"
-                buttonTitle=""
-                buttonFloated="right"
-                handleChange={this.handleChange}
-                handleClick={this.handleClick}
-                position="left center"></MaterialItemForm>)
-
         return (
             <List.Item key={material.id}>
-                <span>
-                    <Icon name={this.getMaterialIcon(material)} />
-                    {material.titulo}
-                </span>
-                <Button onClick={() => this.removerMaterial(material)} icon="close" basic floated="right" size="mini"></Button>
-                {botaoEditar}
+                <Segment>
+                    <Label basic>
+                        <Icon size="large" name={this.getMaterialIcon(material)} />
+                        {material.titulo}
+                    </Label>
+
+                    <Button onClick={() => this.removerMaterial(material)} icon="close" basic floated="right" size="mini"></Button>
+                    <MaterialItemForm
+                        material={material}
+                        seleciona={this.seleciona}
+                        limpa={this.limpaSelecao}
+                        titulo={"Editar " + material.titulo}
+                        icon="pencil"
+                        buttonTitle=""
+                        buttonFloated="right"
+                        handleChange={this.handleChange}
+                        handleClick={this.handleClick}
+                        position="left center"></MaterialItemForm>
+                    {material.tipo === 'Q' ?
+                        <Link to={`/cursos/${this.props.cursoSelecionado.id}/questionario/${material.id}`}>
+                            <Button onClick={this.toggleVisibleUnidades.bind(this)} basic floated="right" size="mini">Questões</Button>
+                        </Link> : ''}
+                    {material.final ? (<Label color="red" size='mini' floating basic>Final</Label>) : ''}
+                </Segment>
             </List.Item>
         )
     }
@@ -175,15 +183,25 @@ export class MaterialList extends Component {
     handleChange(e, obj) {
         const element = obj !== undefined ? obj : e.target
         const material = this.state.materialSelecionado
-        material[element.name] = element.value
+        if (element === obj && element.checked !== undefined)
+            material[element.name] = element.checked
+        else
+            material[element.name] = element.value
         material.unidade_id = this.props.unidadeSelecionada.id
+        this.setMaterialFinal(material)
         this.setState({ materialSelecionado: material })
+    }
+
+    setMaterialFinal(material) {
+        if (material.tipo !== "Q") {
+            material.final = false;
+        }
     }
 
     render() {
         return (
             <div key={'lista-materiais-unidade-' + this.props.unidadeSelecionada + "-" + this.state.updateMateriais}>
-                <List celled selection verticalAlign='middle' key={"list-documentos"}>
+                <List animated selection verticalAlign='middle' key={"list-documentos"}>
                     {
                         this.state.materiais.map(material => (
                             this.renderMaterial(material)

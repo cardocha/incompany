@@ -1,7 +1,7 @@
 <?php
 require_once(CONTROLLERS_DIR . 'BaseController.php');
 
-class Materiais extends BaseController
+class Questionario extends BaseController
 {
     public function __construct()
     {

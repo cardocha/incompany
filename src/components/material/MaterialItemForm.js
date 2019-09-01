@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Header, Popup, Icon, Dropdown } from 'semantic-ui-react';
+import { Form, Button, Header, Popup, Icon, Dropdown, Checkbox } from 'semantic-ui-react';
 
 
 export const MaterialItemForm = ({ material, icon, titulo, position,
@@ -13,24 +13,6 @@ export const MaterialItemForm = ({ material, icon, titulo, position,
         content={
             <Form>
                 <Header>{titulo}</Header>
-                <Form.Field>
-                    <label>Título</label>
-                    <input
-                        type="text"
-                        placeholder='Título'
-                        value={material.titulo}
-                        name="titulo"
-                        onChange={handleChange} />
-                </Form.Field>
-                <Form.Field >
-                    <label>Link</label>
-                    <input
-                        type="text"
-                        placeholder='Link'
-                        value={material.url}
-                        name="url"
-                        onChange={handleChange} />
-                </Form.Field>
                 <Form.Field >
                     <label>Tipo Material</label>
                     <Dropdown selection
@@ -43,6 +25,27 @@ export const MaterialItemForm = ({ material, icon, titulo, position,
                             { key: "tipo-mat-3", text: "Questionário", value: "Q", icon: "question circle outline" }
                         ]} />
                 </Form.Field>
+                <Form.Field>
+                    <label>Título</label>
+                    <input
+                        type="text"
+                        placeholder='Título'
+                        value={material.titulo}
+                        name="titulo"
+                        onChange={handleChange} />
+                </Form.Field>
+                {material.tipo !== 'Q' ?
+                    (<Form.Field>
+                        <label>Link</label>
+                        <input
+                            type="text"
+                            placeholder='Link'
+                            value={material.url}
+                            name="url"
+                            onChange={handleChange} />
+                    </Form.Field>) :
+                    <Checkbox name="final" checked={material.final} onChange={handleChange} size="small" label='Mostrar ao final do curso' />
+                }
                 <Form.Field >
                     <label>&nbsp;</label>
                     <Button onClick={() => handleClick("SM")} floated="right" icon="check" basic></Button>

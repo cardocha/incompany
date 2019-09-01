@@ -190,7 +190,7 @@ export class CursoList extends Component {
                                         <Button onClick={() => this.selectCurso(c)} className="botao-item-sistema" basic>
                                             <List.Content>
                                                 <Segment compact basic>
-                                                    <Icon name='grid layout' size='big' />
+                                                    <Icon name='cube' size='big' />
                                                     <List.Header className="nome-list">{c.titulo}</List.Header>
                                                     <Divider></Divider>
                                                     <Label size="mini" basic>
