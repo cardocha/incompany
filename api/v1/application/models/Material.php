@@ -14,6 +14,7 @@ class Material extends BaseModel
         $this->db->select('*');
         $this->db->from($this->get_tabela());
         $this->db->where('unidade_id', $unidade_id);
+        $this->db->order_by('tipo, titulo');
         $query = $this->db->get();
         return $query->result();
     }

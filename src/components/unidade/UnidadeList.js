@@ -110,7 +110,7 @@ export class UnidadeList extends Component {
                                 {unidade.titulo}
                             </Accordion.Title>
                             <Accordion.Content active={this.state.activeIndex === unidade.id}>
-                                <MaterialList curso={this.state.cursoSelecionado} materiais={unidade.materiais}></MaterialList>
+                                <MaterialList update={this.props.update} cursoSelecionado={this.props.curso} unidadeSelecionada={unidade}></MaterialList>
                                 <Button.Group key={'edicao-unidade-' + unidade.id} floated="right" size="mini" basic>
                                     <Popup wide="very"
                                         trigger={
