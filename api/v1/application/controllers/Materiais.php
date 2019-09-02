@@ -33,6 +33,14 @@ class Materiais extends BaseController
         return $validacao->run();
     }
 
+    public function find($material_id){
+        $method = parent::detectar_acao();
+        if ($method === "GET") {
+            $resultado_query = $this->material->get_por_id($material_id);
+            echo json_encode($resultado_query);
+        }
+    }
+
     public function lookup($unidade_id){
         $method = parent::detectar_acao();
         if ($method === "GET") {

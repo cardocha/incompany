@@ -95,7 +95,7 @@ export class MaterialList extends Component {
         return imageRegex.test(url);
     }
 
-    toggleVisibleUnidades() {
+    toggleVisibleModalQuestoes() {
         this.setState({ unidadesVisible: !this.state.unidadesVisible })
     }
 
@@ -115,6 +115,10 @@ export class MaterialList extends Component {
             if (acao === "RM") {
                 this.removerMaterial()
             }
+    }
+
+    getDadosMaterial(material){
+        return material
     }
 
     renderMaterial(material) {
@@ -139,8 +143,11 @@ export class MaterialList extends Component {
                         handleClick={this.handleClick}
                         position="left center"></MaterialItemForm>
                     {material.tipo === 'Q' ?
-                        <Link to={`/cursos/${this.props.cursoSelecionado.id}/questionario/${material.id}`}>
-                            <Button onClick={this.toggleVisibleUnidades.bind(this)} basic floated="right" size="mini">Questões</Button>
+                        <Link
+                            to={{
+                                pathname: `/cursos/${this.props.cursoSelecionado.id}/unidade/${this.props.unidadeSelecionada.id}/questionario/${material.id}`
+                            }}>
+                            <Button onClick={this.toggleVisibleModalQuestoes.bind(this)} basic floated="right" size="mini">Questões</Button>
                         </Link> : ''}
                     {material.final ? (<Label color="red" size='mini' floating basic>Final</Label>) : ''}
                 </Segment>

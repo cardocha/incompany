@@ -9,6 +9,10 @@ export class UnidadeRepository {
         return WebApi.create().get(`unidades/curso/${cursoId}`)
     }
 
+    static findById(unidadeId) {
+        return WebApi.create().get(`unidades/${unidadeId}`)
+    }
+
     static save(unidade) {
         return WebApi.create().post('unidades', unidade)
     }

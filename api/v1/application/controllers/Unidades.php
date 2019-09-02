@@ -32,6 +32,14 @@ class Unidades extends BaseController
         }
     }
 
+    public function find($unidade_id){
+        $method = parent::detectar_acao();
+        if ($method === "GET") {
+            $resultado_query = $this->unidade->get_por_id($unidade_id);
+            echo json_encode($resultado_query);
+        }
+    }
+
     private function valida($unidade, $edicao)
     {
         $validacao = parent::get_validador($unidade);

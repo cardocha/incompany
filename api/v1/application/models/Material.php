@@ -19,6 +19,20 @@ class Material extends BaseModel
         return $query->result();
     }
 
+    public function get_por_id($id){
+         $this->db->select('mat.*,
+        uni.id as unidadeId,
+        uni.titulo as unidadeTitulo,
+        cur.id as cursoId,
+        cur.titulo as cursoTitulo');
+        $this->db->from($this->get_tabela().' mat');
+        $this->db->join('unidade uni','  uni.id = mat.unidade_id');
+        $this->db->join('curso cur','  cur.id = uni.curso_id');
+        $this->db->where('mat.id', $id);
+        $query = $this->db->get();
+        return $query->result_array()[0];
+    }
+
     public function persistir($material)
     {
         return  parent::persiste($material, $this->get_tabela());

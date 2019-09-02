@@ -2,18 +2,18 @@ import { WebApi } from './WebApi';
 export class QuestionarioRepository {
 
     static all() {
-        return WebApi.create().get('questao')
+        return WebApi.create().get('questionarios')
     }
 
     static save(curso) {
-        return WebApi.create().post('questao', curso)
+        return WebApi.create().post('questionarios', curso)
     }
 
     static remove(curso) {
-        return WebApi.create().delete('questao', { "data": curso })
+        return WebApi.create().delete('questionarios', { "data": curso })
     }
 
-    static findById(id) {
-        return WebApi.create().get(`questao/${id}`)
+    static findByMaterialId(materialId) {
+        return WebApi.create().get(`questionarios/material/${materialId}`)
     }
 }

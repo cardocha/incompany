@@ -1,12 +1,12 @@
 <?php
 require_once(CONTROLLERS_DIR . 'BaseController.php');
 
-class Questionario extends BaseController
+class Questionarios extends BaseController
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper('material_helper');
+        $this->load->helper('questionario_helper');
         carregar_dependencias();
     }
 
@@ -14,7 +14,7 @@ class Questionario extends BaseController
     {
         $method = parent::detectar_acao();
         if ($method === "GET") {
-            $resultado_query = $this->categoria->get_todos('titulo');
+            $resultado_query = $this->categoria->get_todos('ordem');
             echo json_encode($resultado_query);
         }
     }
@@ -33,11 +33,11 @@ class Questionario extends BaseController
         return $validacao->run();
     }
 
-    public function lookup($unidade_id){
+    public function lookup($material_id){
         $method = parent::detectar_acao();
         if ($method === "GET") {
-            $materiais = $this->material->get_por_unidade_id($unidade_id);
-            echo json_encode($materiais);
+            $questoes = $this->questao->get_por_material_id($material_id);
+            echo json_encode($questoes);
         }
     }
 

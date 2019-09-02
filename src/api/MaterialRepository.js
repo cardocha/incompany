@@ -13,6 +13,10 @@ export class MaterialRepository {
         return WebApi.create().get(`materiais/unidade/${unidadeId}`)
     }
 
+    static findById(materialId) {
+        return WebApi.create().get(`materiais/${materialId}`)
+    }
+
     static remove(material) {
         return WebApi.create().delete('materiais', { "data": material })
     }

@@ -27,10 +27,11 @@ CREATE TABLE `alternativa` (
   `texto` varchar(500) NOT NULL,
   `questao_id` int(11) NOT NULL,
   `ordem` int(11) NOT NULL,
+  `correta` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_alternativa_questao1_idx` (`questao_id`),
   CONSTRAINT `fk_alternativa_questao1` FOREIGN KEY (`questao_id`) REFERENCES `questao` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +40,7 @@ CREATE TABLE `alternativa` (
 
 LOCK TABLES `alternativa` WRITE;
 /*!40000 ALTER TABLE `alternativa` DISABLE KEYS */;
+INSERT INTO `alternativa` VALUES (1,'Resposta legal féra 1',1,1,'\0');
 /*!40000 ALTER TABLE `alternativa` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -80,7 +82,7 @@ CREATE TABLE `categoria` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `descricao` varchar(300) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,7 +91,7 @@ CREATE TABLE `categoria` (
 
 LOCK TABLES `categoria` WRITE;
 /*!40000 ALTER TABLE `categoria` DISABLE KEYS */;
-INSERT INTO `categoria` VALUES (51,'Eletrônica'),(52,'Desenvolvimento de Software');
+INSERT INTO `categoria` VALUES (52,'Desenvolvimento de Software');
 /*!40000 ALTER TABLE `categoria` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,7 +115,7 @@ CREATE TABLE `curso` (
   KEY `fk_curso_usuario1_idx` (`usuario_id`),
   CONSTRAINT `fk_curso_categoria` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_curso_usuario1` FOREIGN KEY (`usuario_id`) REFERENCES `usuario` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +124,7 @@ CREATE TABLE `curso` (
 
 LOCK TABLES `curso` WRITE;
 /*!40000 ALTER TABLE `curso` DISABLE KEYS */;
-INSERT INTO `curso` VALUES (1,'Eletrônica Digital 1','Leogivildo Silva Souza','','',52,1);
+INSERT INTO `curso` VALUES (1,'Eletrônica Digital 1','José de souza','','',52,5),(11,'Introdução a Angular js','Ronaldo Argélio','\0','\0',52,5);
 /*!40000 ALTER TABLE `curso` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -197,7 +199,7 @@ CREATE TABLE `material` (
   PRIMARY KEY (`id`),
   KEY `fk_material_unidade1_idx` (`unidade_id`),
   CONSTRAINT `fk_material_unidade1` FOREIGN KEY (`unidade_id`) REFERENCES `unidade` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,6 +208,7 @@ CREATE TABLE `material` (
 
 LOCK TABLES `material` WRITE;
 /*!40000 ALTER TABLE `material` DISABLE KEYS */;
+INSERT INTO `material` VALUES (14,'Prova da unidade','Q','\0',1,0,'','\0'),(19,'Introdução ao material féra demais','Q','',27,0,'fejofje','\0'),(21,'Avaliação Final do curso','Q','\0',28,0,'','');
 /*!40000 ALTER TABLE `material` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +227,7 @@ CREATE TABLE `questao` (
   PRIMARY KEY (`id`),
   KEY `fk_questao_material1_idx` (`material_id`),
   CONSTRAINT `fk_questao_material1` FOREIGN KEY (`material_id`) REFERENCES `material` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,6 +236,7 @@ CREATE TABLE `questao` (
 
 LOCK TABLES `questao` WRITE;
 /*!40000 ALTER TABLE `questao` DISABLE KEYS */;
+INSERT INTO `questao` VALUES (1,'Olá esta é a primeira pergunta',1,21);
 /*!40000 ALTER TABLE `questao` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,7 +280,7 @@ CREATE TABLE `unidade` (
   PRIMARY KEY (`id`),
   KEY `fk_table1_curso1_idx` (`curso_id`),
   CONSTRAINT `fk_table1_curso1` FOREIGN KEY (`curso_id`) REFERENCES `curso` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,6 +289,7 @@ CREATE TABLE `unidade` (
 
 LOCK TABLES `unidade` WRITE;
 /*!40000 ALTER TABLE `unidade` DISABLE KEYS */;
+INSERT INTO `unidade` VALUES (1,'Unidade 1',1),(21,'Unidade 2',1),(22,'Unidade 3',1),(23,'Unidade 4',1),(26,'Unidade 1',11),(27,'Unidade 2',11),(28,'Avaliação Final',11);
 /*!40000 ALTER TABLE `unidade` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -304,7 +309,7 @@ CREATE TABLE `usuario` (
   `ativo` bit(1) NOT NULL,
   `tipo` varchar(2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -313,7 +318,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Bruno Santana 2','alairton@gmail.com','0000-00-00 00:00:00','7A5DF5FFA0DEC2228D90B8D0A0F1B0767B748B0A41314C1230','','U'),(5,'Luciano Cardoso','lupearljam@gmail.com','0000-00-00 00:00:00','2A057642222A878BC360F52F8E1F0DFD2AF93196F123269397','','A'),(6,'lolo','lolo@uol.com','0000-00-00 00:00:00','2a057642222a878bc360f52f8e1f0dfd2af93196f123269397','','A');
+INSERT INTO `usuario` VALUES (1,'Bruno Santana 2','alairton@gmail.com','0000-00-00 00:00:00','7A5DF5FFA0DEC2228D90B8D0A0F1B0767B748B0A41314C1230','','U'),(5,'Luciano Cardoso','lupearljam@gmail.com','0000-00-00 00:00:00','2A057642222A878BC360F52F8E1F0DFD2AF93196F123269397','','A'),(8,'cccccc','fefo@joe.com','0000-00-00 00:00:00','2A057642222A878BC360F52F8E1F0DFD2AF93196F123269397','','A');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -326,4 +331,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-08-26 23:43:10
+-- Dump completed on 2019-09-01 20:11:05

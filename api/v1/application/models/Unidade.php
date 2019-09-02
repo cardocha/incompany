@@ -30,6 +30,10 @@ class Unidade extends BaseModel
         return boolval(count($query->result_array()) > 0);
     }
 
+    public function get_por_id($id){
+        return parent::get_registro_por_id($id);
+    }
+
     public function persistir($usuario)
     {
         return  parent::persiste($usuario, $this->get_tabela());
