@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Form, Segment, Button, Divider, Icon } from 'semantic-ui-react';
+import { Checkbox, Form, Segment, Button, Divider, Icon, Header, Modal } from 'semantic-ui-react';
 import { AlternativaRepository } from '../../api/AlternativaRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 
@@ -10,27 +10,28 @@ export class AlternativaList extends Component {
         this.state = {
             alternativas: [],
             alternativaSelecionada: this.initializeAlternativa(),
-            updateAlternativas: 1
+            updateAlternativas: 1,
+            textoNovaAlternativa: ""
         }
+
         this.handleClick = this.handleClick.bind(this)
         this.handleChange = this.handleChange.bind(this)
+        this.handleChangeRadios = this.handleChangeRadios.bind(this)
         this.removerAlternativa = this.removerAlternativa.bind(this)
+        this.alteraAlternativaCorreta = this.alteraAlternativaCorreta.bind(this)
     }
 
-    handleChange(e, { value }) {
-        this.setState({ value })
-        this.setAlternativaSelecionada(value)
+    handleChange(e) {
+        this.setState({ textoNovaAlternativa: e.target.value })
     }
 
-    handleChange(e, obj) {
-        const element = obj !== undefined ? obj : e.target
-        const alternativa = this.state.alternativaSelecionada
-        if (element === obj && element.checked !== undefined)
-            alternativa[element.name] = element.checked
-        else
-            alternativa[element.name] = element.value
+    handleChangeRadios(e, obj) {
+        const idAlternativa = obj.value;
+        this.alteraAlternativaCorreta(this.props.questao.id, idAlternativa)
+    }
 
-        this.setState({ alternativaSelecionada: alternativa })
+    async alteraAlternativaCorreta(questaoId, alternativaId) {
+        this.setStatusRequisicao(await AlternativaRepository.setAlternativaCorreta(questaoId, alternativaId));
     }
 
     initializeAlternativa() {
@@ -50,6 +51,8 @@ export class AlternativaList extends Component {
         resultado.data.map(a => {
             a.correta = a.correta === "1"
             alternativas.push(a)
+            if (a.correta)
+                this.setState({ alternativaSelecionada: a })
         })
 
         this.setState({ alternativas: alternativas })
@@ -65,7 +68,10 @@ export class AlternativaList extends Component {
     }
 
     async salvarAlternativa() {
-        this.setStatusRequisicao(await AlternativaRepository.save(this.state.alternativaSelecionada));
+        let alternativa = this.initializeAlternativa()
+        alternativa.texto = this.state.textoNovaAlternativa;
+        this.setStatusRequisicao(await AlternativaRepository.save(alternativa));
+        this.setState({ textoNovaAlternativa: "" })
     }
 
     setStatusRequisicao(resultado) {
@@ -90,16 +96,16 @@ export class AlternativaList extends Component {
     render() {
         return (
             <Segment key={this.state.updateAlternativas} className="bottom-extended">
-
+                <Header>Alternativas</Header>
                 {this.state.alternativas.map(a => (
                     <Form.Field key={"alternativa-" + a.id}>
                         <Checkbox
                             radio
                             label={a.texto}
-                            name={"questao-" + this.props.questao.id}
+                            name="correta"
                             value={a.id}
-                            checked={this.state.value === a.id}
-                            onChange={this.handleChange.bind(this)}
+                            checked={this.state.alternativaSelecionada.id === a.id}
+                            onChange={this.handleChangeRadios}
                         />
                         <Button onClick={() => this.removerAlternativa(a)} icon="close" basic floated="right" size="mini"></Button>
                         <Divider></Divider>
@@ -110,8 +116,8 @@ export class AlternativaList extends Component {
                     name="texto"
                     placeholder="Descrição da nova alternativa"
                     size="mini"
+                    value={this.state.textoNovaAlternativa}
                     onChange={this.handleChange}
-                    value={this.state.alternativaSelecionada.texto}
                 />
                 <Button onClick={() => this.handleClick("SA")} floated="right" basic size="mini"><Icon name="add"></Icon>Adicionar Alternativa</Button>
             </Segment >

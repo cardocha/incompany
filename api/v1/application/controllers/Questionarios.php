@@ -19,13 +19,29 @@ class Questionarios extends BaseController
         }
     }
 
+    public function nova(){
+         
+        $material = parent::get_dados();
+        if($material){
+            $questoes = $this->questao->get_por_material_id($material->id);
+            $numero_proxima_questao = count($questoes) + 1;
+            $enunciado_nova_questao = "Nova Questão #".$numero_proxima_questao;
+            $nova_questao = array(
+                "enunciado" => $enunciado_nova_questao,
+                "ordem" =>    $numero_proxima_questao,
+                "material_id" => $material->id
+            );
+
+            $this->persistir($nova_questao);    
+        }
+    }
+
     private function valida($material, $edicao)
     {
         $validacao = parent::get_validador($material);
-        $validacao->set_rules('titulo', 'Título', 'required');
-        $validacao->set_rules('tipo', 'Tipo', 'required');
-        if($material['tipo'] !=='Q')
-            $validacao->set_rules('url', 'url', 'required');
+        $validacao->set_rules('enunciado', 'Enunciado', 'required');
+        $validacao->set_rules('ordem', 'Ordem', 'required');
+        $validacao->set_rules('material_id', 'Material', 'required');
        
         if ($edicao) {
             $validacao->set_rules('id', 'Identificação', 'is_natural_no_zero');
@@ -41,17 +57,14 @@ class Questionarios extends BaseController
         }
     }
 
-    protected function persistir($material)
+    protected function persistir($questao)
     {
         $id = 0;
-        $validacao = $this->valida((array) $material, false);
-        $msg = "Material Salvo.";
-
-        if(!isset($material->final))
-            $material->final = false;
+        $validacao = $this->valida((array) $questao, false);
+        $msg = "Questionário Salvo.";
 
         if ($validacao) {
-            $id = $this->material->persistir((array)$material);
+            $id = $this->questao->persistir((array)$questao);
         } else {
             $msg = parent::get_errors();
         }
@@ -59,14 +72,16 @@ class Questionarios extends BaseController
         echo parent::resposta_json($id > 0, $msg, null);
     }
 
-    protected function remover($material)
+    protected function remover($questao)
     {
         $id = 0;
-        $validacao = $material->id > 0;
-        $msg = "Material \"".$material->titulo."\" Removido.";
+        $validacao = $questao->id > 0;
+        $msg = "Questão Removida.";
+
+        $this->questao->remove_todas_alternativas($questao->id);
 
         if ($validacao) {
-            $id = $this->material->remover((array)$material);
+            $id = $this->questao->remover((array)$questao);
         } else {
             $msg = parent::get_errors();
         }

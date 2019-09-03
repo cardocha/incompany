@@ -20,18 +20,14 @@ export class CursoList extends Component {
 
         this.handleChange = this.handleChange.bind(this)
         this.handleClick = this.handleClick.bind(this)
-        this.editarCurso = this.editarCurso.bind(this)
         this.limparSelecao = this.limparSelecao.bind(this)
         this.handleOncloseChange = this.handleOncloseChange.bind(this)
-        this.showDashBoard = this.showDashBoard.bind(this)
     }
 
     async componentDidMount() {
         this.updateCursos()
         const categorias = await CategoriaRepository.all();
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
-        this.setState({ showDashBoard: this.showDashBoard })
-        this.setState({ hideDashBoard: this.hideDashBoard })
     }
 
     buildDropdownItensCategoria(categorias) {
@@ -98,14 +94,6 @@ export class CursoList extends Component {
         this.setStatusRequisicao(await CursoRepository.remove(this.state.cursoSelecionado));
     }
 
-    editarCurso() {
-        this.props.hideDashBoard()
-    }
-
-    showDashBoard() {
-        this.props.showDashBoard()
-    }
-
     limparSelecao() {
         this.setState({ cursoSelecionado: this.initializeCurso() })
     }
@@ -141,10 +129,9 @@ export class CursoList extends Component {
                     titulo.includes('Edição') ?
                         <Button.Group basic>
                             <Button onClick={() => this.handleClick('R')} icon="close" ></Button>
-                            <Link to={{
-                                pathname: `/cursos/${this.state.cursoSelecionado.id}`,
-                                back: this.showDashBoard
-                            }}><Button onClick={() => this.handleClick('E')} icon="pencil" ></Button></Link>
+                            <Link to={`/cursos/${this.state.cursoSelecionado.id}`}>
+                                <Button onClick={() => this.handleClick('E')} icon="pencil" ></Button>
+                            </Link>
                         </Button.Group> : ''
                 }
             </Form>
@@ -157,9 +144,6 @@ export class CursoList extends Component {
         } else
             if (acao === "R") {
                 this.removerCurso()
-            }
-            else if (acao === "E") {
-                this.editarCurso()
             }
     }
 

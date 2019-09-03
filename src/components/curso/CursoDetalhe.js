@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { CursoRepository } from '../../api/CursoRepository';
 import {
-    Segment, Form, Button, Divider, Accordion,
+    Segment, Form, Button, Divider,
     Header, Label, Icon,
-    Popup, Input, Dropdown, List, Container
+    Input, Dropdown, List,
 } from 'semantic-ui-react';
 import './curso-detalhe.css'
 import { Auth } from '../../api/Auth';
 import { CategoriaRepository } from '../../api/CategoriaRepository';
 import { UnidadeList } from '../unidade/UnidadeList';
+import { Link } from "react-router-dom";
+import { BarraTopo } from '../BarraTopo';
 
 export class CursoDetalhe extends Component {
 
@@ -16,7 +18,7 @@ export class CursoDetalhe extends Component {
         super(props)
         this.state = {
             cursoSelecionado: {
-                unidades:[]
+                unidades: []
             },
             categorias: [],
             updateCurso: 1,
@@ -75,67 +77,72 @@ export class CursoDetalhe extends Component {
 
     render() {
         return (
-            <Segment>
-                <Segment key={this.state.updateCurso} className="bottom-extended">
-                    <Header>{this.state.titulo}</Header>
-                    <Form>
-                        <Form.Group>
-                            <Form.Field width={6} >
-                                <label>Título</label>
-                                <input placeholder='Título'
-                                    onChange={this.handleChange}
-                                    name="titulo"
-                                    type="text"
-                                    value={this.state.cursoSelecionado.titulo} />
-                            </Form.Field>
-                            <Form.Field width={5}>
-                                <label>Categoria</label>
-                                <Dropdown selection
-                                    onChange={this.handleChange}
-                                    name='categoria_id'
-                                    value={this.state.cursoSelecionado.categoria_id}
-                                    options={this.state.categorias} />
-                            </Form.Field>
-                            <Form.Field width={5}>
-                                <label>Nome Tutor</label>
-                                <input placeholder='Nome do Tutor'
-                                    name="nome_tutor"
-                                    type="text"
-                                    onChange={this.handleChange}
-                                    value={this.state.cursoSelecionado.nome_tutor} />
-                            </Form.Field>
-                            <Form.Field width={4}>
-                                <label>Tags</label>
-                                <Input
-                                    icon='tags'
-                                    size="small"
-                                    iconPosition='left'
-                                    label={{ tag: false, content: 'Adicionar', basic: true }}
-                                    labelPosition='right'
-                                    placeholder='Enter tags'
-                                />
-                            </Form.Field>
-                        </Form.Group>
-                        <List horizontal>
-                            {
-                                this.getTags().map(t => (
-                                    <Label size="small" key={t.id} as='a' tag>
-                                        {t.nome}
-                                        <Icon circular size="big" name="close"></Icon>
-                                    </Label>
-                                ))
-                            }
-                        </List>
-                        <Divider></Divider>
-                        <Header className="header-detalhes">Unidades</Header>
-                        <UnidadeList update={this.updateCurso.bind(this)} curso={this.state.cursoSelecionado}></UnidadeList>
-                        <Button.Group floated='right'>
-                            <Button onClick={this.backToDashBoard}> <Icon name='arrow left' />Cancelar</Button>
-                            <Button className='button-action-detail'> <Icon name='check' /> Salvar</Button>
-                        </Button.Group>
-                    </Form>
+            <div>
+                <BarraTopo></BarraTopo>
+                <Segment>
+                    <Segment key={this.state.updateCurso} className="bottom-extended">
+                        <Header>{this.state.titulo}</Header>
+                        <Form>
+                            <Form.Group>
+                                <Form.Field width={6} >
+                                    <label>Título</label>
+                                    <input placeholder='Título'
+                                        onChange={this.handleChange}
+                                        name="titulo"
+                                        type="text"
+                                        value={this.state.cursoSelecionado.titulo} />
+                                </Form.Field>
+                                <Form.Field width={5}>
+                                    <label>Categoria</label>
+                                    <Dropdown selection
+                                        onChange={this.handleChange}
+                                        name='categoria_id'
+                                        value={this.state.cursoSelecionado.categoria_id}
+                                        options={this.state.categorias} />
+                                </Form.Field>
+                                <Form.Field width={5}>
+                                    <label>Nome Tutor</label>
+                                    <input placeholder='Nome do Tutor'
+                                        name="nome_tutor"
+                                        type="text"
+                                        onChange={this.handleChange}
+                                        value={this.state.cursoSelecionado.nome_tutor} />
+                                </Form.Field>
+                                <Form.Field width={4}>
+                                    <label>Tags</label>
+                                    <Input
+                                        icon='tags'
+                                        size="small"
+                                        iconPosition='left'
+                                        label={{ tag: false, content: 'Adicionar', basic: true }}
+                                        labelPosition='right'
+                                        placeholder='Enter tags'
+                                    />
+                                </Form.Field>
+                            </Form.Group>
+                            <List horizontal>
+                                {
+                                    this.getTags().map(t => (
+                                        <Label size="small" key={t.id} as='a' tag>
+                                            {t.nome}
+                                            <Icon circular size="big" name="close"></Icon>
+                                        </Label>
+                                    ))
+                                }
+                            </List>
+                            <Divider></Divider>
+                            <Header className="header-detalhes">Unidades</Header>
+                            <UnidadeList update={this.updateCurso.bind(this)} curso={this.state.cursoSelecionado}></UnidadeList>
+                            <Button.Group floated='right'>
+                                <Link to="/">
+                                    <Button > <Icon name='arrow left' />Cancelar</Button>
+                                </Link>
+                                <Button className='button-action-detail'> <Icon name='check' /> Salvar</Button>
+                            </Button.Group>
+                        </Form>
+                    </Segment>
                 </Segment>
-            </Segment>
+            </div>
         );
     }
 }

@@ -19,6 +19,21 @@ class Alternativas extends BaseController
         }
     }
 
+    public function atualizar(){
+        $post = parent::get_dados();
+        if(isset($post->data->questaoId) && isset($post->data->alternativaId)){
+           $questao = $post->data->questaoId;
+           $alternativa = $post->data->alternativaId;
+
+           $this->alternativa->set_todas_alternativas_incorretas($questao);
+           $this->alternativa->set_alternativa_correta($alternativa); 
+            echo parent::resposta_json(true, "Reposta Salva", null);
+        }
+        else
+          echo parent::resposta_json(false, "Falta a questão e a alternativa", null);
+
+    }
+
     private function valida($alternativa, $edicao)
     {
         $validacao = parent::get_validador($alternativa);

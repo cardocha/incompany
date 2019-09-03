@@ -27,3 +27,7 @@
 .pointer{
   cursor: pointer !important;
 }
+
+.actions.bottom-extended {
+    margin-bottom: 40px !important;
+}

@@ -13,6 +13,11 @@ export class AlternativaRepository {
         return WebApi.create().delete('alternativas', { "data": curso })
     }
 
+    static setAlternativaCorreta(questaoId, alternativaId) {
+        return WebApi.create().post('alternativas/atualizar',
+            { "data": { questaoId: questaoId, alternativaId: alternativaId } })
+    }
+
     static findByQuestaoId(questaoId) {
         return WebApi.create().get(`alternativas/questao/${questaoId}`)
     }

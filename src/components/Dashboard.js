@@ -11,52 +11,33 @@ export class Dashboard extends Component {
 
     constructor(props) {
         super(props)
-        this.state = {
-            dashboardContent: true
-        }
+        this.state = {}
     }
 
     sair() {
         Auth.clear()
     }
 
-    async componentDidMount() {
-    }
-
-    hideDashBoard() {
-        this.setState({ dashboardContent: false })
-    }
-
-    showDashBoard() {
-        this.setState({ dashboardContent: true })
+    async componentWillMount() {
+        if (Auth.get() === null)
+            Auth.clear()
     }
 
     renderDashboardContent() {
-        return this.state.dashboardContent ? (
+        return (
             <div>
-                <CursoList
-                    hideDashBoard={this.hideDashBoard.bind(this)}
-                    showDashBoard={this.showDashBoard.bind(this)}>
-                </CursoList>
-                <UsuarioList
-                    hideDashBoard={this.hideDashBoard.bind(this)}
-                    showDashBoard={this.showDashBoard.bind(this)}>
-                </UsuarioList>
-                <CategoriaList
-                    hideDashBoard={this.hideDashBoard.bind(this)}
-                    showDashBoard={this.showDashBoard.bind(this)}>
-                </CategoriaList>
-            </div>
-        ) : '';
+                <CursoList></CursoList>
+                <UsuarioList></UsuarioList>
+                <CategoriaList></CategoriaList>
+            </div>)
     }
 
     render() {
-        return Auth.get() !== null ?
-            (
-                <Segment>
-                    <BarraTopo sairAction={this.sair} auth={Auth.get()}></BarraTopo>
-                    {this.renderDashboardContent()}
-                </Segment>
-            ) : ''
+        return (
+            <div>
+                <BarraTopo></BarraTopo>
+                <Segment>{this.renderDashboardContent()}</Segment>
+            </div>
+        )
     }
 }

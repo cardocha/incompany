@@ -5,12 +5,16 @@ export class QuestionarioRepository {
         return WebApi.create().get('questionarios')
     }
 
-    static save(curso) {
-        return WebApi.create().post('questionarios', curso)
+    static save(questao) {
+        return WebApi.create().post('questionarios', questao)
     }
 
-    static remove(curso) {
-        return WebApi.create().delete('questionarios', { "data": curso })
+    static nova(material) {
+        return WebApi.create().post('questionarios/nova', material)
+    }
+
+    static remove(questao) {
+        return WebApi.create().delete('questionarios', { "data": questao })
     }
 
     static findByMaterialId(materialId) {

@@ -19,6 +19,18 @@ class Alternativa extends BaseModel
         return $query->result();
     }
 
+    public function set_todas_alternativas_incorretas($questao_id){
+        $this->db->set('correta', FALSE);
+        $this->db->where('questao_id', $questao_id);
+        $this->db->update($this->get_tabela());
+    }
+
+    public function set_alternativa_correta($alternativa_id){
+        $this->db->set('correta', TRUE);
+        $this->db->where('id', $alternativa_id);
+        $this->db->update($this->get_tabela());
+    }
+
     public function persistir($alternativa)
     {
         return  parent::persiste($alternativa, $this->get_tabela());

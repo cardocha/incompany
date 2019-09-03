@@ -38,6 +38,11 @@ abstract class BaseModel extends CI_Model
         return $this->db->delete($this->get_tabela(), array($campo => $id));
     }
 
+    public function remove_todos($id, $campo, $tabela)
+    {
+        return $this->db->delete($tabela, array($campo => $id));
+    }
+
     public function sanitize_fields($dados, $tabela)
     {
         $table_fields = $this->db->list_fields($tabela);
