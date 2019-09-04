@@ -26,6 +26,10 @@ export class CursoList extends Component {
 
     async componentDidMount() {
         this.updateCursos()
+        this.updateCategorias()
+    }
+
+    async updateCategorias(){
         const categorias = await CategoriaRepository.all();
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
     }
@@ -46,10 +50,6 @@ export class CursoList extends Component {
             categoria_id: 0,
             usuario_id: 0
         }
-    }
-
-    limparSelecaoCurso() {
-        this.setState({ categoriaCurso: this.initializeCurso() })
     }
 
     handleChange(e, obj) {
@@ -96,6 +96,7 @@ export class CursoList extends Component {
 
     limparSelecao() {
         this.setState({ cursoSelecionado: this.initializeCurso() })
+        this.updateCategorias()
     }
 
     buildCursoForm(titulo) {
