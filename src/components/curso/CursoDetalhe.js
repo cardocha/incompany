@@ -11,7 +11,8 @@ import { CategoriaRepository } from '../../api/CategoriaRepository';
 import { UnidadeList } from '../unidade/UnidadeList';
 import { Link } from "react-router-dom";
 import { BarraTopo } from '../BarraTopo';
-import { QuestionarioList } from '../questionario/QuestionarioList';
+import { TagaRepository } from '../../api/TagRepository';
+import { Notificacao } from '../notificacao/Notificacao';
 
 export class CursoDetalhe extends Component {
 
@@ -21,23 +22,66 @@ export class CursoDetalhe extends Component {
             cursoSelecionado: {
                 unidades: []
             },
+            tagSelecionada: this.initializeTag(),
             categorias: [],
+            tags: [],
             updateCurso: 1,
         }
 
         this.backToDashBoard = this.backToDashBoard.bind(this)
+        this.handleChangeTag = this.handleChangeTag.bind(this)
+        this.excluiTag = this.excluiTag.bind(this)
+        this.salvarTag = this.salvarTag.bind(this)
+
     }
 
     async componentDidMount() {
         this.updateCurso();
     }
 
+    initializeTag() {
+        return {
+            id: 0,
+            descricao: '',
+            curso: this.props.match.params.id
+        }
+    }
+
+    async excluiTag(tag) {
+        this.setStatusRequisicao(await TagaRepository.remove(tag))
+    }
+
+    async salvarTag(tag) {
+        this.setStatusRequisicao(await TagaRepository.save(this.state.tagSelecionada))
+    }
+
+    setStatusRequisicao(resultado) {
+        Notificacao.gerar(resultado)
+        if (resultado.data.flag)
+            this.updateTags()
+    }
+
+    handleChangeTag(e, obj) {
+        const element = obj !== undefined ? obj : e.target
+        const tag = this.state.tagSelecionada
+        tag[element.name] = element.value
+        tag.curso_id = this.props.match.params.id
+        this.setState({ tagSelecionada: tag })
+    }
+
     async updateCurso() {
         const curso = await CursoRepository.findById(this.props.match.params.id)
         const categorias = await CategoriaRepository.all();
+        this.updateTags()
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
         this.setState({ cursoSelecionado: curso.data })
         this.setState({ updateCurso: this.state.updateCurso + 1 })
+    }
+
+    async updateTags() {
+        const tags = await TagaRepository.all()
+        this.setState({ tags: tags.data })
+        this.setState({ tagSelecionada: this.initializeTag() })
     }
 
     buildDropdownItensCategoria(categorias) {
@@ -87,7 +131,7 @@ export class CursoDetalhe extends Component {
                             <Form.Group>
                                 <Form.Field width={6} >
                                     <label>Título</label>
-                                    <input 
+                                    <input
                                         type="text"
                                         name="titulo"
                                         placeholder='Título'
@@ -113,10 +157,13 @@ export class CursoDetalhe extends Component {
                                 <Form.Field width={4}>
                                     <label>Tags</label>
                                     <Input
+                                        name="descricao"
+                                        value={this.state.tagSelecionada.descricao}
+                                        onChange={this.handleChangeTag}
                                         icon='tags'
                                         size="small"
                                         iconPosition='left'
-                                        label={{ tag: false, content: 'Adicionar', basic: true }}
+                                        label={{ tag: false, content: (<a onClick={this.salvarTag}><Icon name="add"></Icon></a>), basic: true }}
                                         labelPosition='right'
                                         placeholder='Enter tags'
                                     />
@@ -124,10 +171,10 @@ export class CursoDetalhe extends Component {
                             </Form.Group>
                             <List horizontal>
                                 {
-                                    this.getTags().map(t => (
+                                    this.state.tags.map(t => (
                                         <Label size="small" key={t.id} as='a' tag>
-                                            {t.nome}
-                                            <Icon circular size="big" name="close"></Icon>
+                                            {t.descricao}
+                                            <a onClick={() => this.excluiTag(t)} ><Icon size="big" name="close"></Icon></a>
                                         </Label>
                                     ))
                                 }
