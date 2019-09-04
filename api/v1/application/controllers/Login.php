@@ -30,6 +30,7 @@ class Login extends BaseController {
             { 
                 $auth->token = strtoupper(gerar_token($usuario_recuperado));
                 $auth->nome = $usuario_recuperado['nome'];
+                $auth->tipo = $usuario_recuperado['tipo'];
                 $auth->email = $usuario_recuperado['email'];
                 $auth->id = $usuario_recuperado['id'];
                 $msg = "Login realizado";

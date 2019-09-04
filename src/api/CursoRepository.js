@@ -9,6 +9,18 @@ export class CursoRepository {
         return WebApi.create().post('cursos', curso)
     }
 
+    static inscrever(cursoId, usuarioId) {
+        return WebApi.create().post('cursos/inscrever', { usuario_id: usuarioId, curso_id: cursoId })
+    }
+
+    static findDisponiveis(usuarioId) {
+        return WebApi.create().get(`cursos/disponiveis/usuario/${usuarioId}`)
+    }
+
+    static findByIncricaoUsuario(usuarioId) {
+        return WebApi.create().get(`cursos/usuario/${usuarioId}`)
+    }
+
     static remove(curso) {
         return WebApi.create().delete('cursos', { "data": curso })
     }

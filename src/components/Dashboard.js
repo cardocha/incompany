@@ -6,6 +6,7 @@ import { BarraTopo } from './BarraTopo';
 import { CursoList } from './curso/CursoList';
 import { Auth } from '../api/Auth';
 import { Segment } from 'semantic-ui-react';
+import { Aluno } from './aluno/Aluno';
 
 export class Dashboard extends Component {
 
@@ -32,11 +33,27 @@ export class Dashboard extends Component {
             </div>)
     }
 
+    renderAlunoContent() {
+        return (
+            <div>
+                <Aluno></Aluno>
+            </div>)
+    }
+
+    renderParaUsuario() {
+        const tipoUsuario = Auth.get().tipo
+        if (tipoUsuario === "A")
+            return this.renderDashboardContent();
+        else
+            if (tipoUsuario === "U")
+                  return this.renderAlunoContent();
+    }
+
     render() {
         return (
             <div>
                 <BarraTopo></BarraTopo>
-                <Segment>{this.renderDashboardContent()}</Segment>
+                <Segment>{this.renderParaUsuario()}</Segment>
             </div>
         )
     }

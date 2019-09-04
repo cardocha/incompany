@@ -61,3 +61,6 @@ $route['materiais/unidade/(:num)'] = 'materiais/lookup/$1';
 $route['questionarios/material/(:num)'] = 'questionarios/lookup/$1';
 $route['cursos/(:num)/unidade/(:num)/questionario/(:num)'] = 'questionario/lookup/$3';
 $route['tags/curso/(:num)'] = 'tags/lookup/$1';
+$route['cursos/usuario/(:num)'] = 'cursos/inscrito/$1';
+$route['cursos/disponiveis/usuario/(:num)'] = 'cursos/disponiveis/$1';
+

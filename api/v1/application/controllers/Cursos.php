@@ -19,6 +19,22 @@ class Cursos extends BaseController
         }
     }
 
+    public function inscrito($usuario_id){
+        $method = parent::detectar_acao();
+        if ($method === "GET") {
+            $resultado_query = $this->curso->get_por_situacao($usuario_id, true);
+            echo json_encode($resultado_query);
+        }  
+    }
+
+    public function disponiveis($usuario_id){
+        $method = parent::detectar_acao();
+        if ($method === "GET") {
+            $resultado_query = $this->curso->get_por_situacao($usuario_id, false);
+            echo json_encode($resultado_query);
+        }  
+    }
+
     public function lookup($id){
         $curso = $this->curso->get_por_id($id);
         $query_unidades = $this->unidade->get_por_curso_id($id);
@@ -57,6 +73,25 @@ class Cursos extends BaseController
         
         echo parent::resposta_json($id > 0, $msg, null); 
     }
+
+
+    public function inscrever()
+    {
+        $id = 0;
+        $dados = parent::get_dados();
+        $validacao = !empty($dados->usuario_id) && !empty($dados->curso_id);
+        $msg = "Inscrição Concluída.";
+        
+        if ($validacao) {
+            $id = $this->curso->inscrever($dados->curso_id, $dados->usuario_id );
+        } else {
+            $msg = "Dados inválidos para inscrição";
+        }
+        
+        echo parent::resposta_json(true, $msg, null); 
+    }
+
+    
 
     protected function remover($curso)
     {

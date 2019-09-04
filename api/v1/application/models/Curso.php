@@ -22,6 +22,35 @@ class Curso extends BaseModel
         return $query->result_array();
     }
 
+    public function get_por_situacao($usuario_id, $inscrito) : array
+    {   
+        $cond = $inscrito ? '' : 'not';
+        $query = $this->db->query('
+            select * from curso c
+                where c.id '.$cond.' in ( select curso_id from inscricao_dados where usuario_id = '.$usuario_id.');
+        ');
+        return $query->result_array();
+    }
+
+    public function inscrever($curso_id,$usuario_id){
+
+        $this->db->trans_start();
+
+        $id_inscricao = parent::persiste_table(array("data"=> date("Y-m-d H:i:s")), 'inscricao');
+        
+        $dados_inscricao = array(
+            "usuario_id" => $usuario_id,
+            "curso_id" => $curso_id,
+            "inscricao_id" => $id_inscricao
+        );
+
+        $id = parent::persiste_table($dados_inscricao, 'inscricao_dados');
+
+        $this->db->trans_complete();
+
+        return $id;
+    }
+
     public function get_por_id($id){
         return (object) parent::get_registro_por_id($id);
     }

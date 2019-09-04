@@ -18,6 +18,20 @@ abstract class BaseModel extends CI_Model
         return $this->db->insert_id();
     }
 
+     public function persiste_table($dados, $tabela)
+    {
+        $dados = $this->sanitize_fields($dados,  $tabela);
+
+        if (isset($dados['id']) && intval($dados['id']) > 0)
+            return $this->atualiza($dados);
+
+        unset($dados['id']);
+
+        $this->db->set($dados);
+        $this->db->insert($tabela);
+        return $this->db->insert_id();
+    }
+
     public function insere($tabela, $dados)
     {
         $dados = $this->sanitize_fields($dados, $this->get_tabela());
