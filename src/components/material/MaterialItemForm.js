@@ -44,7 +44,7 @@ export const MaterialItemForm = ({ material, icon, titulo, position,
                             name="url"
                             onChange={handleChange} />
                     </Form.Field>) :
-                    <Checkbox name="final" checked={material.final} onChange={handleChange} size="small" label='Mostrar ao final do curso' />
+                    <Checkbox name="final" checked={material.final} onChange={handleChange} size="small" label='Mostrar ao final da unidade' />
                 }
                 <Form.Field >
                     <label>&nbsp;</label>

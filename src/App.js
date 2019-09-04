@@ -20,10 +20,6 @@ function App() {
         <Route path="/login" exact component={Login}></Route>
         <Route path="/dashboard" exact component={Dashboard}></Route>
         <Route path="/cursos/:id" exact component={CursoDetalhe}></Route>
-        <Route exact
-          path="/cursos/:idcurso/unidade/:idUnidade/questionario/:idquestionario"
-          component={QuestionarioList}>
-        </Route>
       </Switch>
     </BrowserRouter>
 

@@ -11,6 +11,7 @@ import { CategoriaRepository } from '../../api/CategoriaRepository';
 import { UnidadeList } from '../unidade/UnidadeList';
 import { Link } from "react-router-dom";
 import { BarraTopo } from '../BarraTopo';
+import { QuestionarioList } from '../questionario/QuestionarioList';
 
 export class CursoDetalhe extends Component {
 
@@ -86,10 +87,11 @@ export class CursoDetalhe extends Component {
                             <Form.Group>
                                 <Form.Field width={6} >
                                     <label>Título</label>
-                                    <input placeholder='Título'
-                                        onChange={this.handleChange}
-                                        name="titulo"
+                                    <input 
                                         type="text"
+                                        name="titulo"
+                                        placeholder='Título'
+                                        onChange={this.handleChange}
                                         value={this.state.cursoSelecionado.titulo} />
                                 </Form.Field>
                                 <Form.Field width={5}>

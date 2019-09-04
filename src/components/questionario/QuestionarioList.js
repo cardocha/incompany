@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { QuestionarioRepository } from '../../api/QuestionarioRepository';
-import { Modal, List, Button, Icon, Segment, Label, Form, Divider, Breadcrumb, Header } from 'semantic-ui-react';
+import { Modal, List, Button, Icon, Segment, Label, Form, Divider, Breadcrumb, Header, TextArea, Grid } from 'semantic-ui-react';
 import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { AlternativaList } from '../alternativa/AlternativaList';
@@ -25,6 +25,7 @@ export class QuestionarioList extends Component {
         this.novaQuestao = this.novaQuestao.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.seleciona = this.seleciona.bind(this)
+        this.salvarQuestao = this.salvarQuestao.bind(this)
     }
 
     initializeQuestao() {
@@ -32,7 +33,7 @@ export class QuestionarioList extends Component {
             id: 0,
             enunciado: "",
             ordem: 0,
-            material_id: this.props.match.params.idquestionario
+            material_id: this.props.questionario.id
         }
     }
 
@@ -60,8 +61,12 @@ export class QuestionarioList extends Component {
         this.updateQuestoes()
     }
 
+    async salvarQuestao() {
+        return QuestionarioRepository.save(this.state.questaoSelecionada)
+    }
+
     async updateQuestoes() {
-        const materialId = this.props.match.params.idquestionario
+        const materialId = this.props.questionario.id
         const questoes = await QuestionarioRepository.findByMaterialId(materialId)
         const material = await MaterialRepository.findById(materialId)
         this.setState({ questoes: questoes.data })
@@ -71,14 +76,16 @@ export class QuestionarioList extends Component {
 
     showModalAlternativas() {
         return (
-            <Modal open={this.state.modalAlternativas} wide="very" size="big"
+            <Modal open={this.state.modalAlternativas} wide="very"
                 content={
                     <Segment className="bottom-extended">
+                        <Label attached="top left" basic>Enunciado</Label>
                         <Form>
                             <Form.Group>
-                                <Form.Input
+                                <TextArea
+                                    style={{ maxHeight: 100 }}
+                                    rows={3}
                                     type="text"
-                                    label="Enunciado"
                                     size="small"
                                     name="enunciado"
                                     value={this.state.questaoSelecionada.enunciado}
@@ -121,8 +128,10 @@ export class QuestionarioList extends Component {
 
     setModalVisivel(open) {
         this.setState({ modalAlternativas: open })
-        if (!open)
-            this.updateQuestoes()
+        if (!open) {
+            this.salvarQuestao(this.state.materialSelecionado).then(() => this.updateQuestoes())
+
+        }
     }
 
     render() {
@@ -144,20 +153,25 @@ export class QuestionarioList extends Component {
                         {this.state.questoes.map(questao => (
                             <List.Item key={"questao-item-" + questao.id}>
                                 <Segment>
-                                    <Label basic>
-                                        <i>
-                                            {questao.enunciado}
-                                        </i>
-                                    </Label>
-                                    <Label basic>
-                                        <i>
-                                            {questao.alternativaCorretaTexto === null ? "Nenhuma Alternativa Selecionada" : questao.alternativaCorretaTexto}
-                                        </i>
-                                    </Label>
-                                    <Button size="mini" floated="right" basic icon="arrow up"></Button>
-                                    <Button size="mini" floated="right" basic icon="arrow down"></Button>
-                                    <Button key={"edita-alternativas-questao-" + questao.id} onClick={() => this.seleciona(questao)} icon="pencil" floated="right" size="mini" basic></Button>
-                                    <Button onClick={() => this.removerQuestao(questao)} size="mini" floated="right" basic icon="close" ></Button>
+                                    <Grid columns={3} stackable textAlign='center'>
+                                        <Grid.Row verticalAlign='middle'>
+                                            <Grid.Column>
+                                                <i>
+                                                    {questao.enunciado}
+                                                </i>
+                                            </Grid.Column>
+                                            <Grid.Column>
+                                                <i>
+                                                    {questao.alternativaCorretaTexto === null ? "Nenhuma Alternativa Selecionada" : questao.alternativaCorretaTexto}
+                                                </i>
+                                            </Grid.Column>
+                                            <Grid.Column>
+                                                <Button onClick={() => this.removerQuestao(questao)} size="mini" floated="right" basic icon="close" ></Button>
+                                                <Button key={"edita-alternativas-questao-" + questao.id} onClick={() => this.seleciona(questao)} icon="pencil" floated="right" size="mini" basic></Button>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+
                                 </Segment>
                             </List.Item >
                         ))}
@@ -167,7 +181,7 @@ export class QuestionarioList extends Component {
                 </Modal.Content>
                 <Modal.Actions className="bottom-extended">
                     <Link to={"/cursos/" + this.state.materialSelecionado.cursoId}>
-                        <Button floated="left" basic size="mini"><Icon name="arrow left"></Icon> Voltar para o Curso</Button>
+                        <Button onClick={() => this.props.setVisibleModal(false)} floated="left" basic size="mini"><Icon name="arrow left"></Icon> Voltar para o Curso</Button>
                     </Link>
                 </Modal.Actions>
             </Modal>

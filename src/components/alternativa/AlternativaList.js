@@ -98,18 +98,19 @@ export class AlternativaList extends Component {
             <Segment key={this.state.updateAlternativas} className="bottom-extended">
                 <Header>Alternativas</Header>
                 {this.state.alternativas.map(a => (
-                    <Form.Field key={"alternativa-" + a.id}>
-                        <Checkbox
-                            radio
-                            label={a.texto}
-                            name="correta"
-                            value={a.id}
-                            checked={this.state.alternativaSelecionada.id === a.id}
-                            onChange={this.handleChangeRadios}
-                        />
-                        <Button onClick={() => this.removerAlternativa(a)} icon="close" basic floated="right" size="mini"></Button>
-                        <Divider></Divider>
-                    </Form.Field>
+                    <div>
+                        <Segment className="bottom-extended">
+                            <Checkbox
+                                radio
+                                label={a.texto}
+                                name="correta"
+                                value={a.id}
+                                checked={this.state.alternativaSelecionada.id === a.id}
+                                onChange={this.handleChangeRadios}
+                            />
+                            <Button onClick={() => this.removerAlternativa(a)} floated="right" icon="close" basic size="mini"></Button>
+                        </Segment>
+                    </div>
                 ))}
 
                 <input

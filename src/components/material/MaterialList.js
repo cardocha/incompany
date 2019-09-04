@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { List, Button, Icon, Label, Popup, Form, Header, Segment } from 'semantic-ui-react'
 import { MaterialItemForm } from './MaterialItemForm';
-import { Link } from 'react-router-dom';
 import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
+import { QuestionarioList } from '../questionario/QuestionarioList';
 
 export class MaterialList extends Component {
     constructor(props) {
@@ -11,12 +11,14 @@ export class MaterialList extends Component {
         this.state = {
             materiais: [],
             materialSelecionado: this.initializeMaterial(),
-            updateMateriais: 1
+            updateMateriais: 1,
+            modalQuestoes: false
         }
         this.handleChange = this.handleChange.bind(this)
         this.handleClick = this.handleClick.bind(this)
         this.limpaSelecao = this.limpaSelecao.bind(this)
         this.seleciona = this.seleciona.bind(this)
+        this.setVisibleModalQuestoes = this.setVisibleModalQuestoes.bind(this)
     }
 
     async componentDidMount() {
@@ -80,9 +82,20 @@ export class MaterialList extends Component {
         this.setState({ materialSelecionado: this.initializeMaterial() })
     }
 
+    setVisibleModalQuestoes(flag) {
+        this.setState({ modalQuestoes: flag })
+    }
+
     seleciona(material) {
         this.setMaterialFinal(material)
         this.setState({ materialSelecionado: material })
+    }
+
+    editaQuestoes(material) {
+       this.seleciona(material)
+        if (material.tipo === 'Q') {
+            this.setVisibleModalQuestoes(true)
+        }
     }
 
     isImage(url) {
@@ -93,10 +106,6 @@ export class MaterialList extends Component {
     isCompressed(url) {
         const imageRegex = new RegExp(/\.(zip|rar|gz|7z)$/i)
         return imageRegex.test(url);
-    }
-
-    toggleVisibleModalQuestoes() {
-        this.setState({ unidadesVisible: !this.state.unidadesVisible })
     }
 
     async salvarMaterial() {
@@ -117,7 +126,7 @@ export class MaterialList extends Component {
             }
     }
 
-    getDadosMaterial(material){
+    getDadosMaterial(material) {
         return material
     }
 
@@ -143,12 +152,7 @@ export class MaterialList extends Component {
                         handleClick={this.handleClick}
                         position="left center"></MaterialItemForm>
                     {material.tipo === 'Q' ?
-                        <Link
-                            to={{
-                                pathname: `/cursos/${this.props.cursoSelecionado.id}/unidade/${this.props.unidadeSelecionada.id}/questionario/${material.id}`
-                            }}>
-                            <Button onClick={this.toggleVisibleModalQuestoes.bind(this)} basic floated="right" size="mini">Questões</Button>
-                        </Link> : ''}
+                        <Button onClick={() => this.editaQuestoes(material)} basic floated="right" size="mini">Questões</Button> : ''}
                     {material.final ? (<Label color="red" size='mini' floating basic>Final</Label>) : ''}
                 </Segment>
             </List.Item>
@@ -205,6 +209,15 @@ export class MaterialList extends Component {
         }
     }
 
+    renderQuestionarioList() {
+        return this.state.modalQuestoes ? (
+            <QuestionarioList
+                setVisibleModal={this.setVisibleModalQuestoes.bind(this)}
+                modalQuestoes={this.state.modalQuestoes}
+                questionario={this.state.materialSelecionado}>
+            </QuestionarioList>) : ''
+    }
+
     render() {
         return (
             <div key={'lista-materiais-unidade-' + this.props.unidadeSelecionada + "-" + this.state.updateMateriais}>
@@ -226,7 +239,10 @@ export class MaterialList extends Component {
                     handleClick={this.handleClick}
                     handleChange={this.handleChange}
                     position="left center"></MaterialItemForm>
+
+                {this.renderQuestionarioList()}
             </div >
+
         )
     }
 }
