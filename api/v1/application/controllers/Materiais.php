@@ -33,12 +33,46 @@ class Materiais extends BaseController
         return $validacao->run();
     }
 
+    public function interacao(){
+        
+        $id = 0;
+        $dados = parent::get_dados();
+        $validacao = !empty($dados->usuario_id) && !empty($dados->material_id) && !empty($dados->curso_id) ;
+        $msg = "Visualização registrada.";
+
+        $inscricao = $this->curso->get_inscricao($dados->usuario_id, $dados->curso_id);
+        
+        if ($validacao) {
+            $insercao = array(
+                "material_id" => $dados->material_id,
+                "inscricao_id" => $inscricao['id'],
+                "percentual" => 100
+            );
+            $id = $this->interacao->persistir($insercao);
+        } else {
+            $msg = "Dados inválidos para inscrição";
+        }
+        
+        echo parent::resposta_json(true, $msg, null); 
+    }
+
     public function find($material_id){
         $method = parent::detectar_acao();
         if ($method === "GET") {
             $resultado_query = $this->material->get_por_id($material_id);
             echo json_encode($resultado_query);
         }
+    }
+
+    public function possui_interacao(){
+        $dados = parent::get_dados();
+        $materiais = $this->material->get_por_unidade_id($dados->unidade_id);
+        
+        foreach($materiais as $material) {
+            $material->interacao = $this->interacao->get_por_material_usuario($material->id, $dados->usuario_id, $dados->curso_id);
+        }
+
+        echo json_encode($materiais);
     }
 
     public function lookup($unidade_id){

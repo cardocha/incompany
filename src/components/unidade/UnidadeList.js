@@ -3,6 +3,7 @@ import { Icon, Header, Button, Accordion, Popup, Form, Segment } from 'semantic-
 import { Notificacao } from '../notificacao/Notificacao';
 import { UnidadeRepository } from '../../api/UnidadeRepository';
 import { MaterialList } from '../material/MaterialList';
+import { Auth } from '../../api/Auth';
 
 export class UnidadeList extends Component {
 
@@ -111,72 +112,74 @@ export class UnidadeList extends Component {
                             </Accordion.Title>
                             <Accordion.Content active={this.state.activeIndex === unidade.id}>
                                 <MaterialList update={this.props.update} cursoSelecionado={this.props.curso} unidadeSelecionada={unidade}></MaterialList>
-                                <Button.Group key={'edicao-unidade-' + unidade.id} floated="right" size="mini" basic>
-                                    <Popup wide="very"
-                                        trigger={
-                                            <Button onClick={() => this.selecionaUnidade(unidade)}><Icon name="pencil"></Icon>Editar {unidade.titulo}</Button>
-                                        }
-                                        content={
-                                            <Form>
-                                                <Header>Editar Unidade</Header>
-                                                <Form.Group>
-                                                    <Form.Field>
-                                                        <label>Título</label>
-                                                        <input
-                                                            placeholder='Título'
-                                                            name="titulo"
-                                                            type="text"
-                                                            value={this.state.unidadeSelecionada.titulo}
-                                                            onChange={this.handleChange}
-                                                        />
-                                                    </Form.Field>
-                                                    <Form.Field>
-                                                        <label>&nbsp;</label>
-                                                        <Button onClick={() => this.handleClick('SU')} floated="right" icon="check" basic></Button>
-                                                    </Form.Field>
-                                                </Form.Group>
-                                            </Form>
-                                        }
-                                        on='click'
-                                        position='right center'
-                                    />
-                                    <Button onClick={() => this.removerUnidade(unidade)} ><Icon name="close"></Icon>Remover {unidade.titulo}</Button>
-                                </Button.Group>
+                                {Auth.isPerfilAdm() ? (
+                                    <Button.Group key={'edicao-unidade-' + unidade.id} floated="right" size="mini" basic>
+                                        <Popup wide="very"
+                                            trigger={
+                                                <Button onClick={() => this.selecionaUnidade(unidade)}><Icon name="pencil"></Icon>Editar {unidade.titulo}</Button>
+                                            }
+                                            content={
+                                                <Form>
+                                                    <Header>Editar Unidade</Header>
+                                                    <Form.Group>
+                                                        <Form.Field>
+                                                            <label>Título</label>
+                                                            <input
+                                                                placeholder='Título'
+                                                                name="titulo"
+                                                                type="text"
+                                                                value={this.state.unidadeSelecionada.titulo}
+                                                                onChange={this.handleChange}
+                                                            />
+                                                        </Form.Field>
+                                                        <Form.Field>
+                                                            <label>&nbsp;</label>
+                                                            <Button onClick={() => this.handleClick('SU')} floated="right" icon="check" basic></Button>
+                                                        </Form.Field>
+                                                    </Form.Group>
+                                                </Form>
+                                            }
+                                            on='click'
+                                            position='right center'
+                                        />
+                                        <Button onClick={() => this.removerUnidade(unidade)} ><Icon name="close"></Icon>Remover {unidade.titulo}</Button>
+                                    </Button.Group>) : ''}
                             </Accordion.Content>
                         </div>
                     ))
                 }
                 </Accordion>
-                <Button.Group floated='left'>
-                    <Popup wide="very"
-                        trigger={
-                            <Button onClick={() => this.limparSelecaoUnidade()} size="mini" basic>Adicionar Unidade</Button>
-                        }
-                        content={
-                            <Form>
-                                <Header>Nova Unidade</Header>
-                                <Form.Group>
-                                    <Form.Field>
-                                        <label>Título</label>
-                                        <input
-                                            placeholder='Título'
-                                            name="titulo"
-                                            type="text"
-                                            value={this.state.unidadeSelecionada.titulo}
-                                            onChange={this.handleChange}
-                                        />
-                                    </Form.Field>
-                                    <Form.Field>
-                                        <label>&nbsp;</label>
-                                        <Button onClick={() => this.handleClick('SU')} floated="right" icon="check" basic></Button>
-                                    </Form.Field>
-                                </Form.Group>
-                            </Form>
-                        }
-                        on='click'
-                        position='right center'
-                    />
-                </Button.Group>
+                {
+                    Auth.isPerfilAdm() ? (<Button.Group floated='left'>
+                        <Popup wide="very"
+                            trigger={
+                                <Button onClick={() => this.limparSelecaoUnidade()} size="mini" basic>Adicionar Unidade</Button>
+                            }
+                            content={
+                                <Form>
+                                    <Header>Nova Unidade</Header>
+                                    <Form.Group>
+                                        <Form.Field>
+                                            <label>Título</label>
+                                            <input
+                                                placeholder='Título'
+                                                name="titulo"
+                                                type="text"
+                                                value={this.state.unidadeSelecionada.titulo}
+                                                onChange={this.handleChange}
+                                            />
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <label>&nbsp;</label>
+                                            <Button onClick={() => this.handleClick('SU')} floated="right" icon="check" basic></Button>
+                                        </Form.Field>
+                                    </Form.Group>
+                                </Form>
+                            }
+                            on='click'
+                            position='right center'
+                        />
+                    </Button.Group>) : ''}
             </div>
         )
     }

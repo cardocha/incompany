@@ -51,6 +51,17 @@ class Curso extends BaseModel
         return $id;
     }
 
+    public function get_inscricao($usuario_id, $curso_id){
+        $this->db->select('ins.*');
+        $this->db->from('inscricao ins');
+        $this->db->join('inscricao_dados insd','ins.id = insd.inscricao_id');
+        $this->db->where('insd.usuario_id', $usuario_id);
+        $this->db->where('insd.curso_id', $curso_id);
+        
+        $query = $this->db->get();
+        return $query->result_array()[0];
+    }
+
     public function get_por_id($id){
         return (object) parent::get_registro_por_id($id);
     }

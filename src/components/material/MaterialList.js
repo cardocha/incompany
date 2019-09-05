@@ -4,6 +4,8 @@ import { MaterialItemForm } from './MaterialItemForm';
 import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { QuestionarioList } from '../questionario/QuestionarioList';
+import { Auth } from '../../api/Auth';
+import { Link } from "react-router-dom";
 
 export class MaterialList extends Component {
     constructor(props) {
@@ -27,7 +29,7 @@ export class MaterialList extends Component {
 
     async updateMateriais() {
         if (this.props.unidadeSelecionada !== undefined) {
-            const resultado = await MaterialRepository.findByUnidadeId(this.props.unidadeSelecionada.id)
+            const resultado = await MaterialRepository.possuiInteracao(Auth.get().id, this.props.unidadeSelecionada.curso_id, this.props.unidadeSelecionada.id);
             let materiais = []
             resultado.data.map(m => {
                 m.final = m.final === "1"
@@ -92,7 +94,7 @@ export class MaterialList extends Component {
     }
 
     editaQuestoes(material) {
-       this.seleciona(material)
+        this.seleciona(material)
         if (material.tipo === 'Q') {
             this.setVisibleModalQuestoes(true)
         }
@@ -116,6 +118,10 @@ export class MaterialList extends Component {
         this.setStatusRequisicao(await MaterialRepository.remove(material));
     }
 
+    async registrarInteracao(material) {
+        this.setStatusRequisicao(await MaterialRepository.interacao(material.id, Auth.get().id, this.props.unidadeSelecionada.curso_id));
+    }
+
     handleClick(acao) {
         if (acao === "SM") {
             this.salvarMaterial()
@@ -130,29 +136,49 @@ export class MaterialList extends Component {
         return material
     }
 
+    load() {
+        window.location.reload()
+    }
+
+    renderBotaoVisualizacao(material) {
+        if (material.tipo !== 'Q')
+            return (<a onClick={() => this.registrarInteracao(material)} target='blank' href={`${material.url}`}><Button floated="right" basic size="mini" >Ver Material</Button> </a>)
+        else
+            return (<Link target='blank' to={`?ver=${material.url}`}><Button floated="right" basic size="mini">Responder Questionário</Button> </Link>)
+
+    }
+
+    escondeMaterial(material) {
+        if (this.todosMaterialsDaUnidadeConcluidos())
+            return false
+
+        return material.final && !Auth.isPerfilAdm()
+    }
+
+    todosMaterialsDaUnidadeConcluidos() {
+        let item = this.state.materiais.find(function (material) {
+            return material.interacao === false && !material.final
+        })
+        return item === undefined
+    }
+
+    mostraInteracao(material) {
+        if (material.interacao)
+            return (<Icon floated="right" name="green check"></Icon>)
+        return (<Icon floated="right" name="orange circle"></Icon>)
+    }
+
     renderMaterial(material) {
-        return (
+
+        return this.escondeMaterial(material) ? '' : (
             <List.Item key={material.id}>
                 <Segment>
                     <Label basic>
                         <Icon size="large" name={this.getMaterialIcon(material)} />
                         {material.titulo}
                     </Label>
-
-                    <Button onClick={() => this.removerMaterial(material)} icon="close" basic floated="right" size="mini"></Button>
-                    <MaterialItemForm
-                        material={material}
-                        seleciona={this.seleciona}
-                        limpa={this.limpaSelecao}
-                        titulo={"Editar " + material.titulo}
-                        icon="pencil"
-                        buttonTitle=""
-                        buttonFloated="right"
-                        handleChange={this.handleChange}
-                        handleClick={this.handleClick}
-                        position="left center"></MaterialItemForm>
-                    {material.tipo === 'Q' ?
-                        <Button onClick={() => this.editaQuestoes(material)} basic floated="right" size="mini">Questões</Button> : ''}
+                    {!Auth.isPerfilAdm() ? this.mostraInteracao(material) : ''}
+                    {!Auth.isPerfilAdm() ? this.renderBotaoVisualizacao(material) : this.renderEdicaoMaterial(material)}
                     {material.final ? (<Label color="red" size='mini' floating basic>Final</Label>) : ''}
                 </Segment>
             </List.Item>
@@ -170,6 +196,28 @@ export class MaterialList extends Component {
         )
     }
 
+    renderEdicaoMaterial(material) {
+        return (
+            <div>
+                <Button onClick={() => this.removerMaterial(material)} icon="close" basic floated="right" size="mini"></Button>
+                <MaterialItemForm
+                    material={material}
+                    seleciona={this.seleciona}
+                    limpa={this.limpaSelecao}
+                    titulo={"Editar " + material.titulo}
+                    icon="pencil"
+                    buttonTitle=""
+                    buttonFloated="right"
+                    handleChange={this.handleChange}
+                    handleClick={this.handleClick}
+                    position="left center"></MaterialItemForm>
+                {
+                    material.tipo === 'Q' ?
+                        <Button onClick={() => this.editaQuestoes(material)} basic floated="right" size="mini">Questões</Button> : ''
+                }
+            </div>)
+    }
+
     setStatusRequisicao(resultado) {
         Notificacao.gerar(resultado)
         if (resultado.data.flag) {
@@ -180,7 +228,6 @@ export class MaterialList extends Component {
     }
 
     renderMateriais(materiais, tipo, titulo) {
-        console.log(materiais)
         const filtredMaterials = materiais.find(m => m.tipo === String(tipo))
         if (filtredMaterials) {
             if (Array.isArray(filtredMaterials))
@@ -228,17 +275,19 @@ export class MaterialList extends Component {
                         ))
                     }
                 </List>
-                <MaterialItemForm
-                    material={this.state.materialSelecionado}
-                    titulo={"Inclusão Material"}
-                    seleciona={this.seleciona}
-                    limpa={this.limpaSelecao}
-                    icon="add"
-                    buttonTitle="Incluir Material"
-                    buttonFloated="left"
-                    handleClick={this.handleClick}
-                    handleChange={this.handleChange}
-                    position="left center"></MaterialItemForm>
+                {Auth.isPerfilAdm() ? (
+                    <MaterialItemForm
+                        material={this.state.materialSelecionado}
+                        titulo={"Inclusão Material"}
+                        seleciona={this.seleciona}
+                        limpa={this.limpaSelecao}
+                        icon="add"
+                        buttonTitle="Incluir Material"
+                        buttonFloated="left"
+                        handleClick={this.handleClick}
+                        handleChange={this.handleChange}
+                        position="left center"></MaterialItemForm>
+                ) : ''}
 
                 {this.renderQuestionarioList()}
             </div >

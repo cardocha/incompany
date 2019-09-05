@@ -41,12 +41,10 @@ export class Dashboard extends Component {
     }
 
     renderParaUsuario() {
-        const tipoUsuario = Auth.get().tipo
-        if (tipoUsuario === "A")
+        if (Auth.isPerfilAdm())
             return this.renderDashboardContent();
         else
-            if (tipoUsuario === "U")
-                  return this.renderAlunoContent();
+            return this.renderAlunoContent();
     }
 
     render() {

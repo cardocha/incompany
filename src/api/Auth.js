@@ -15,4 +15,11 @@ export class Auth {
         window.location.href = '/login'
     }
 
+    static isPerfilAdm() {
+        if (this.get() === null)
+            this.clear()
+
+        return this.get().tipo === "A"
+    }
+
 }

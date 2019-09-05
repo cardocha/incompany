@@ -3,7 +3,7 @@ import { Segment, Header, List, Icon, Divider, Label, Button } from 'semantic-ui
 import { Auth } from '../../api/Auth';
 import { CursoRepository } from '../../api/CursoRepository';
 import { Notificacao } from '../notificacao/Notificacao';
-
+import { Link } from "react-router-dom";
 
 export class Aluno extends Component {
     constructor(props) {
@@ -59,7 +59,9 @@ export class Aluno extends Component {
                                             <Icon name='cube' /> {c.nome_tutor}
                                         </Label>
                                     </Segment>
-                                    <Button size="mini" basic>Ir para o curso</Button>
+                                    <Link to={`cursos/${c.id}`}>
+                                        <Button  size="mini" basic>Ir para o curso</Button>
+                                    </Link>
 
                                 </List.Item>
                             ))

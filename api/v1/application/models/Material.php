@@ -11,8 +11,10 @@ class Material extends BaseModel
     }
 
     public function get_por_unidade_id($unidade_id){
-        $this->db->select('*');
-        $this->db->from($this->get_tabela());
+        $this->db->select('mat.*');
+        $this->db->from($this->get_tabela(). ' mat');
+        //$this->db->join('interacao_dados inte',"inte.usuario_id=".$usuario_id. "and inte.material_id=mat.id","left");
+        //$this->db->join("inscricao_dados ids","ids.id = inte.inscricao_id","left");
         $this->db->where('unidade_id', $unidade_id);
         $this->db->order_by('tipo, titulo');
         $query = $this->db->get();
