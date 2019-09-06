@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Checkbox, Form, Segment, Button, Divider, Icon, Header, Modal } from 'semantic-ui-react';
 import { AlternativaRepository } from '../../api/AlternativaRepository';
 import { Notificacao } from '../notificacao/Notificacao';
+import { Auth } from '../../api/Auth';
 
 export class AlternativaList extends Component {
 
@@ -27,7 +28,16 @@ export class AlternativaList extends Component {
 
     handleChangeRadios(e, obj) {
         const idAlternativa = obj.value;
-        this.alteraAlternativaCorreta(this.props.questao.id, idAlternativa)
+        if (Auth.isPerfilAdm())
+            this.alteraAlternativaCorreta(this.props.questao.id, idAlternativa)
+        else {
+            const a = this.state.alternativas.find(a => {
+                return a.id === idAlternativa
+            })
+            this.setState({ alternativaSelecionada: a })
+            this.props.guardarResposta(a)
+        }
+
     }
 
     async alteraAlternativaCorreta(questaoId, alternativaId) {
@@ -51,7 +61,7 @@ export class AlternativaList extends Component {
         resultado.data.map(a => {
             a.correta = a.correta === "1"
             alternativas.push(a)
-            if (a.correta)
+            if (a.correta && Auth.isPerfilAdm())
                 this.setState({ alternativaSelecionada: a })
         })
 
@@ -96,7 +106,7 @@ export class AlternativaList extends Component {
     render() {
         return (
             <Segment key={this.state.updateAlternativas} className="bottom-extended">
-                <Header>Alternativas</Header>
+                {Auth.isPerfilAdm() ? (<Header>Alternativas</Header>) : ''}
                 {this.state.alternativas.map(a => (
                     <div>
                         <Segment className="bottom-extended">
@@ -108,19 +118,20 @@ export class AlternativaList extends Component {
                                 checked={this.state.alternativaSelecionada.id === a.id}
                                 onChange={this.handleChangeRadios}
                             />
-                            <Button onClick={() => this.removerAlternativa(a)} floated="right" icon="close" basic size="mini"></Button>
+                            {Auth.isPerfilAdm() ? (<Button onClick={() => this.removerAlternativa(a)} floated="right" icon="close" basic size="mini"></Button>) : ''}
                         </Segment>
                     </div>
                 ))}
-
-                <input
-                    name="texto"
-                    placeholder="Descrição da nova alternativa"
-                    size="mini"
-                    value={this.state.textoNovaAlternativa}
-                    onChange={this.handleChange}
-                />
-                <Button onClick={() => this.handleClick("SA")} floated="right" basic size="mini"><Icon name="add"></Icon>Adicionar Alternativa</Button>
+                {Auth.isPerfilAdm() ? (
+                    <div>
+                        <input
+                            name="texto"
+                            placeholder="Descrição da nova alternativa"
+                            size="mini"
+                            value={this.state.textoNovaAlternativa}
+                            onChange={this.handleChange}
+                        />
+                        <Button onClick={() => this.handleClick("SA")} floated="right" basic size="mini"><Icon name="add"></Icon>Adicionar Alternativa</Button></div>) : ''}
             </Segment >
 
         )

@@ -142,9 +142,9 @@ export class MaterialList extends Component {
 
     renderBotaoVisualizacao(material) {
         if (material.tipo !== 'Q')
-            return (<a onClick={() => this.registrarInteracao(material)} target='blank' href={`${material.url}`}><Button floated="right" basic size="mini" >Ver Material</Button> </a>)
+            return (<a onClick={() => this.registrarInteracao(material)} target='_blank' href={`${material.url}`}><Button floated="right" basic size="mini" >Ver Material</Button> </a>)
         else
-            return (<Link target='blank' to={`?ver=${material.url}`}><Button floated="right" basic size="mini">Responder Questionário</Button> </Link>)
+            return (<Button onClick={() => this.editaQuestoes(material)} floated="right" basic size="mini">Responder Questionário</Button>)
 
     }
 
@@ -288,7 +288,6 @@ export class MaterialList extends Component {
                         handleChange={this.handleChange}
                         position="left center"></MaterialItemForm>
                 ) : ''}
-
                 {this.renderQuestionarioList()}
             </div >
 

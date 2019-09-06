@@ -5,6 +5,7 @@ import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { AlternativaList } from '../alternativa/AlternativaList';
 import { Link } from "react-router-dom";
+import { Auth } from '../../api/Auth';
 
 export class QuestionarioList extends Component {
     constructor(props) {
@@ -20,12 +21,14 @@ export class QuestionarioList extends Component {
             modalAlternativas: false,
             alternativaSelecionada: 0,
             updateQuestoes: 1,
-            questaoSelecionada: this.initializeQuestao()
+            questaoSelecionada: this.initializeQuestao(),
+            respostas: []
         }
         this.novaQuestao = this.novaQuestao.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.seleciona = this.seleciona.bind(this)
         this.salvarQuestao = this.salvarQuestao.bind(this)
+        this.guardarResposta = this.guardarResposta.bind(this)
     }
 
     initializeQuestao() {
@@ -134,8 +137,66 @@ export class QuestionarioList extends Component {
         }
     }
 
-    render() {
+    guardarResposta(resposta) {
+        this.state.respostas.map(resp => {
+            if (resp.questao_id === resposta.questao_id)
+                this.state.respostas.splice(this.state.respostas.indexOf(resp), 1)
+        })
+
+        this.state.respostas.push(resposta)
+
+        this.setState({ respostas: this.state.respostas })
+    }
+
+    enviarQuestoes() {
+        if (this.state.respostas.length !== this.state.questoes.length)
+            Notificacao.gerar({ data: { flag: false, msg: "Responda todas as questões" } })
+        else{
+            
+        }
+
+    }
+
+    renderQuestoesAluno() {
         return (
+            <Modal size="large" open={true}>
+                <Modal.Header>
+                    <Breadcrumb icon='right angle' sections={
+                        [
+                            { key: 'curso', content: "Curso: " + this.state.materialSelecionado.cursoTitulo, link: false },
+                            { key: 'unidade', content: "Unidade: " + this.state.materialSelecionado.unidadeTitulo, link: false },
+                            { key: 'material', content: "Questionário: " + this.state.materialSelecionado.titulo, active: true }
+                        ]
+                    } />
+
+                </Modal.Header>
+                <Modal.Content key={"modal-quetionario-" + this.state.updateQuestoes} scrolling>
+                    <List>
+                        {this.state.questoes.map(questao => (
+                            <List.Item key={"questao-item-" + questao.id}>
+
+                                {questao.enunciado}
+                                <AlternativaList guardarResposta={this.guardarResposta.bind(this)} questao={questao}></AlternativaList>
+
+                            </List.Item >
+                        ))}
+                    </List>
+
+                </Modal.Content>
+                <Modal.Actions className="bottom-extended">
+                    <Link to={"/cursos/" + this.state.materialSelecionado.cursoId}>
+                        <Button onClick={() => this.props.setVisibleModal(false)} floated="left" basic size="mini"><Icon name="arrow left"></Icon> Voltar para o Curso</Button>
+                    </Link>
+                    <Button onClick={() => this.enviarQuestoes()} floated="right" basic size="mini">Enviar Questionário <Icon name="arrow right"></Icon></Button>
+                </Modal.Actions>
+            </Modal>
+
+        )
+    }
+
+
+    render() {
+        return Auth.isPerfilAdm() ? (
             <Modal size="large" open={true}>
                 <Modal.Header>
                     <Breadcrumb icon='right angle' sections={
@@ -183,8 +244,9 @@ export class QuestionarioList extends Component {
                     <Link to={"/cursos/" + this.state.materialSelecionado.cursoId}>
                         <Button onClick={() => this.props.setVisibleModal(false)} floated="left" basic size="mini"><Icon name="arrow left"></Icon> Voltar para o Curso</Button>
                     </Link>
+
                 </Modal.Actions>
             </Modal>
-        )
+        ) : this.renderQuestoesAluno();
     }
 }
