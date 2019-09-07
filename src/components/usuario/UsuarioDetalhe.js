@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { BarraTopo } from '../BarraTopo';
-import { Segment, Grid, Icon, Label, Divider, Header, List, Table } from 'semantic-ui-react';
+import { Segment, Grid, Icon, Label, Divider, Header, List, Table, Button } from 'semantic-ui-react';
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { CursoRepository } from '../../api/CursoRepository';
-
+import { Link } from "react-router-dom";
 
 export class UsuarioDetalhe extends Component {
     constructor(props) {
@@ -20,9 +20,16 @@ export class UsuarioDetalhe extends Component {
         const detalhesUsuario = await UsuarioRepository.findById(this.props.match.params.id)
         const usuarioSelecionado = detalhesUsuario.data[0]
         const inscricoes = await CursoRepository.findByIncricaoUsuario(usuarioSelecionado.usuarioId)
+
         this.setState({ usuarioSelecionado: usuarioSelecionado })
         this.setState({ detalhesUsuario: detalhesUsuario.data })
         this.setState({ inscricoes: inscricoes.data })
+    }
+
+    isCursoConcluido(dadosConclusao) {
+        const concluido = Number(dadosConclusao.percentual_total);
+        const minimo = Number(dadosConclusao.percentual_docs) + Number(dadosConclusao.percentual_questoes)
+        return concluido >= minimo
     }
 
     initializeUsuario() {
@@ -64,7 +71,7 @@ export class UsuarioDetalhe extends Component {
 
             if (percentual === null)
                 return (<Icon name="orange circle"></Icon>)
-                
+
 
             if (Number(percentual) < 100)
                 return (<Icon name="orange circle"></Icon>)
@@ -74,8 +81,8 @@ export class UsuarioDetalhe extends Component {
         else {
 
             if (percentual === null)
-               return (<Label basic color="orange">0%</Label>)
-               
+                return (<Label basic color="orange">0%</Label>)
+
             if (Number(percentual) < 70)
                 return (<Label basic color="orange">{percentual + "%"}</Label>)
             else
@@ -96,36 +103,57 @@ export class UsuarioDetalhe extends Component {
             <div>
                 <BarraTopo></BarraTopo>
                 <Segment>
+                    <Link to={`/dashboard`}>
+                        <Button size="mini" basic floated="right"> Voltar aos cursos</Button>
+                    </Link>
                     <Icon size="huge" name="user"></Icon>
 
                     <Label size="big" basic>{this.state.usuarioSelecionado.usuarioNome}</Label>
                     <Label size="big" basic>{this.state.usuarioSelecionado.usuarioEmail}</Label>
 
                     <Segment>
-                        <Segment>
-                            <Header>Inscrições</Header>
+                        <Header>Cursos Inscritos / Situação</Header>
+                        <List celled horizontal>
                             {this.state.inscricoes.map(inc => (
-                                <Label>{inc.titulo}</Label>
+                                <List.Item>
+                                    <Segment compact >{inc.titulo} &nbsp;&nbsp;&nbsp;&nbsp;
+                                        {this.isCursoConcluido(inc.dados_conclusao) ?
+                                            (<Label basic size="mini" color="green"> Aprovado</Label>) :
+                                            (<Label basic size="mini" color="orange"> Cursando</Label>)}
+                                    </Segment>
+                                </List.Item>
                             ))}
-                        </Segment>
+                        </List>
                         <Header>Materiais e Questionários</Header>
                         <Table celled selection>
-                            {this.state.detalhesUsuario.map(d => (
+                            <Table.Header>
                                 <Table.Row>
-                                    <Table.Cell>
-                                        <span>{d.cursoTitulo}</span>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <span>{d.materialTitulo}</span>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <span><Icon name={this.getMaterialIcon(d.tipo, d.url)}></Icon></span>
-                                    </Table.Cell>
-                                    <Table.Cell>
-                                        <span>{this.getPercentual(d.percentual, d.tipo)}</span>
-                                    </Table.Cell>
+                                    <Table.HeaderCell>Curso</Table.HeaderCell>
+                                    <Table.HeaderCell>Material / Questionário</Table.HeaderCell>
+                                    <Table.HeaderCell>Tipo</Table.HeaderCell>
+                                    <Table.HeaderCell>Aprovação</Table.HeaderCell>
                                 </Table.Row>
-                            ))}
+                            </Table.Header>
+                            <Table.Body>
+                                {this.state.detalhesUsuario.map(d => (
+
+                                    <Table.Row>
+                                        <Table.Cell>
+                                            <span>{d.cursoTitulo}</span>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <span>{d.materialTitulo}</span>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <span><Icon name={this.getMaterialIcon(d.tipo, d.url)}></Icon></span>
+                                        </Table.Cell>
+                                        <Table.Cell>
+                                            <span>{this.getPercentual(d.percentual, d.tipo)}</span>
+                                        </Table.Cell>
+                                    </Table.Row>
+
+                                ))}
+                            </Table.Body>
                         </Table>
                     </Segment>
                 </Segment>

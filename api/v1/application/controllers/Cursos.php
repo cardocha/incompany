@@ -23,7 +23,12 @@ class Cursos extends BaseController
         $method = parent::detectar_acao();
         if ($method === "GET") {
             $resultado_query = $this->curso->get_por_situacao($usuario_id, true);
-            echo json_encode($resultado_query);
+            $inscricoes = [];
+            foreach($resultado_query as $curso_inscricao) {
+               $curso_inscricao['dados_conclusao'] = $this->curso->get_dados_conclusao($curso_inscricao['id'], $usuario_id);
+               $inscricoes[] = $curso_inscricao;  
+            } 
+            echo json_encode($inscricoes );
         }  
     }
 
