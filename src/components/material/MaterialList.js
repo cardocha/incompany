@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, Button, Icon, Label, Segment } from 'semantic-ui-react'
+import { List, Button, Icon, Label, Segment, Menu } from 'semantic-ui-react'
 import { MaterialItemForm } from './MaterialItemForm';
 import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
@@ -177,7 +177,7 @@ export class MaterialList extends Component {
 
         return this.escondeMaterial(material) ? '' : (
             <List.Item key={material.id}>
-                <Segment>
+                <Segment s>
                     <Label basic>
                         <Icon size="large" name={this.getMaterialIcon(material)} />
                         {material.titulo}
@@ -203,24 +203,29 @@ export class MaterialList extends Component {
 
     renderEdicaoMaterial(material) {
         return (
-            <div>
-                <Button onClick={() => this.removerMaterial(material)} icon="close" basic floated="right" size="mini"></Button>
-                <MaterialItemForm
-                    material={material}
-                    seleciona={this.seleciona}
-                    limpa={this.limpaSelecao}
-                    titulo={"Editar " + material.titulo}
-                    icon="pencil"
-                    buttonTitle=""
-                    buttonFloated="right"
-                    handleChange={this.handleChange}
-                    handleClick={this.handleClick}
-                    position="left center"></MaterialItemForm>
+            <Menu secondary size="mini" compact floated="right">
                 {
                     material.tipo === 'Q' ?
-                        <Button onClick={() => this.editaQuestoes(material)} basic floated="right" size="mini">Questões</Button> : ''
+                        <Menu.Item><Button onClick={() => this.editaQuestoes(material)} basic size="mini">Questões</Button></Menu.Item> : ''
                 }
-            </div>)
+               
+                <Menu.Item>
+                    <MaterialItemForm
+                        material={material}
+                        seleciona={this.seleciona}
+                        limpa={this.limpaSelecao}
+                        titulo={"Editar " + material.titulo}
+                        icon="pencil"
+                        buttonTitle=""
+                        buttonFloated="right"
+                        handleChange={this.handleChange}
+                        handleClick={this.handleClick}
+                        position="left center"></MaterialItemForm>
+                </Menu.Item>
+                <Menu.Item>
+                    <Button onClick={() => this.removerMaterial(material)} icon="close" basic size="mini"></Button>
+                </Menu.Item>
+            </Menu>)
     }
 
     setStatusRequisicao(resultado) {

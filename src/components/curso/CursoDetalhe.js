@@ -39,6 +39,7 @@ export class CursoDetalhe extends Component {
 
         this.backToDashBoard = this.backToDashBoard.bind(this)
         this.handleChangeTag = this.handleChangeTag.bind(this)
+        this.handleChange = this.handleChange.bind(this)
         this.excluiTag = this.excluiTag.bind(this)
         this.salvarTag = this.salvarTag.bind(this)
         this.isCursoConcluido = this.isCursoConcluido.bind(this)
@@ -150,6 +151,10 @@ export class CursoDetalhe extends Component {
         const concluido = Number(this.state.dadosConclusao.percentual_total);
         const minimo = Number(this.state.dadosConclusao.percentual_docs) + Number(this.state.dadosConclusao.percentual_questoes)
         return concluido >= minimo
+    }
+
+    async salvarCurso() {
+        this.setStatusRequisicao(await CursoRepository.save(this.state.cursoSelecionado));
     }
 
     async enviarAvaliacao() {
@@ -307,9 +312,9 @@ export class CursoDetalhe extends Component {
                                 <UnidadeList update={this.updateCurso.bind(this)} curso={this.state.cursoSelecionado}></UnidadeList>
                                 <Button.Group floated='right'>
                                     <Link to="/">
-                                        <Button > <Icon name='arrow left' />Cancelar</Button>
+                                        <Button basic > <Icon name='arrow left' />Voltar</Button>
                                     </Link>
-                                    <Button className='button-action-detail'> <Icon name='check' /> Salvar</Button>
+                                    <Button onClick={() => this.salvarCurso()} className='button-action-detail' basic> <Icon name='check' /> Salvar Curso</Button>
                                 </Button.Group>
                             </Form>
                         </Segment>
