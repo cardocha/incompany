@@ -32,6 +32,43 @@ class Curso extends BaseModel
         return $query->result_array();
     }
 
+    public function get_dados_conclusao($curso_id, $usuario_id){
+        $query = $this->db->query("
+           SELECT 
+                SUM(i.percentual) percentual_total,
+            COUNT((SELECT 
+                        mat.id
+                    FROM
+                        material mat
+                    WHERE
+                        mat.tipo <> 'Q' AND mat.id = m.id)) * 100 AS percentual_docs,
+                COUNT((SELECT 
+                        mat.id
+                    FROM
+                        material mat
+                    WHERE
+                        mat.tipo = 'Q' AND mat.id = m.id)) * 70 AS percentual_questoes
+            FROM
+                material m
+                LEFT  JOIN
+                interacao i ON m.id = i.material_id
+                    JOIN
+                unidade u ON u.id = m.unidade_id
+                    JOIN
+                curso c ON c.id = u.curso_id
+                    JOIN
+                inscricao_dados ind ON ind.curso_id = c.id
+                    JOIN
+                inscricao inc ON inc.id = ind.inscricao_id
+            WHERE
+                c.id = ".$curso_id." AND ind.usuario_id = ".$usuario_id );
+
+        if (count($query->result_array()) > 0)
+            return $query->result()[0];
+        else
+            return false;   
+    }
+
     public function inscrever($curso_id,$usuario_id){
 
         $this->db->trans_start();

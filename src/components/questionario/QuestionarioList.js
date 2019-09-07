@@ -6,6 +6,7 @@ import { Notificacao } from '../notificacao/Notificacao';
 import { AlternativaList } from '../alternativa/AlternativaList';
 import { Link } from "react-router-dom";
 import { Auth } from '../../api/Auth';
+import { CursoRepository } from '../../api/CursoRepository';
 
 export class QuestionarioList extends Component {
     constructor(props) {
@@ -57,7 +58,26 @@ export class QuestionarioList extends Component {
         if (resultado.data.flag) {
             this.setState({ questaoSelecionada: this.initializeQuestao() })
             this.updateQuestoes()
+            this.props.setVisibleModal(false)
+            if (this.props.updateMateriais !== undefined)
+                this.props.updateMateriais()
+
+            if (this.props.update !== undefined) {
+                if (this.verificaUpdateCurso())
+                    this.props.update()
+            }
         }
+    }
+
+    async verificaUpdateCurso() {
+        const dadosConclusao = await CursoRepository.isConcluido(this.state.materialSelecionado.cursoId)
+        return this.isCursoConcluido(dadosConclusao.data)
+    }
+
+    isCursoConcluido(dadosConclusao) {
+        const concluido = Number(dadosConclusao.percentual_total);
+        const minimo = Number(dadosConclusao.percentual_docs) + Number(dadosConclusao.percentual_questoes)
+        return concluido >= minimo
     }
 
     async componentDidMount() {
@@ -148,11 +168,16 @@ export class QuestionarioList extends Component {
         this.setState({ respostas: this.state.respostas })
     }
 
-    enviarQuestoes() {
+    async enviarQuestoes() {
         if (this.state.respostas.length !== this.state.questoes.length)
             Notificacao.gerar({ data: { flag: false, msg: "Responda todas as questões" } })
-        else{
-            
+        else {
+            this.state.respostas[0].material_id = this.state.materialSelecionado.id;
+            this.state.respostas[0].usuario_id = Auth.get().id;
+            this.state.respostas[0].curso_id = this.state.materialSelecionado.cursoId
+
+            this.setStatusRequisicao(await QuestionarioRepository.enviar(this.state.respostas))
+
         }
 
     }

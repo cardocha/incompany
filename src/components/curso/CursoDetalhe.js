@@ -3,7 +3,7 @@ import { CursoRepository } from '../../api/CursoRepository';
 import {
     Segment, Form, Button, Divider,
     Header, Label, Icon,
-    Input, Dropdown, List, Grid,
+    Input, Dropdown, List, Grid, Menu, Rating,
 } from 'semantic-ui-react';
 import './curso-detalhe.css'
 import { Auth } from '../../api/Auth';
@@ -27,13 +27,14 @@ export class CursoDetalhe extends Component {
             categorias: [],
             tags: [],
             updateCurso: 1,
+            dadosConclusao: {}
         }
 
         this.backToDashBoard = this.backToDashBoard.bind(this)
         this.handleChangeTag = this.handleChangeTag.bind(this)
         this.excluiTag = this.excluiTag.bind(this)
         this.salvarTag = this.salvarTag.bind(this)
-
+        this.isCursoConcluido = this.isCursoConcluido.bind(this)
     }
 
     async componentDidMount() {
@@ -73,10 +74,13 @@ export class CursoDetalhe extends Component {
 
     async updateCurso() {
         const curso = await CursoRepository.findById(this.props.match.params.id)
+        const dadosConclusao = await CursoRepository.isConcluido(this.props.match.params.id)
         const categorias = await CategoriaRepository.all();
         this.updateTags()
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
         this.setState({ cursoSelecionado: curso.data })
+        this.setState({ dadosConclusao: dadosConclusao.data })
+        this.setState({ isConcluido: this.isCursoConcluido() })
         this.setState({ updateCurso: this.state.updateCurso + 1 })
     }
 
@@ -122,12 +126,37 @@ export class CursoDetalhe extends Component {
         this.props.history.push('/')
     }
 
+    isCursoConcluido() {
+        const concluido = Number(this.state.dadosConclusao.percentual_total);
+        const minimo = Number(this.state.dadosConclusao.percentual_docs) + Number(this.state.dadosConclusao.percentual_questoes)
+        return concluido >= minimo
+    }
+
+
     renderAreaAluno() {
         return (
-            <div>
+            <div key={'area-aluno-' + this.state.updateCurso}>
                 <BarraTopo></BarraTopo>
                 <Segment key={this.state.updateCurso}>
-                    <Segment>{this.state.cursoSelecionado.titulo} <Divider vertical></Divider> <Link to={`/dashboard`}><Button size="mini" basic floated="right"> Voltar aos cursos</Button></Link></Segment>
+
+                    <Segment>{this.state.cursoSelecionado.titulo}
+                        {this.state.isConcluido ? (<div style={{ display: "inline-block" }} >
+                            &nbsp;&nbsp; <Icon name="green check"></Icon> &nbsp;&nbsp;&nbsp;&nbsp;
+                        <Menu compact size="mini">
+                                <Menu.Item>
+                                    <Button basic size="mini" color="blue"><Icon name="comment"></Icon> Feedback</Button>
+                                </Menu.Item>
+
+                                <Menu.Item>
+                                    <Rating icon='star' defaultRating={0} maxRating={5} />
+                                </Menu.Item>
+                            </Menu>
+                        </div>) : ''}
+                        <Divider vertical></Divider>
+                        <Link to={`/dashboard`}>
+                            <Button size="mini" basic floated="right"> Voltar aos cursos</Button>
+                        </Link>
+                    </Segment>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width={16}>

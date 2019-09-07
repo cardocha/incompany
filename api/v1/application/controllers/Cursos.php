@@ -47,6 +47,12 @@ class Cursos extends BaseController
         echo json_encode($curso);
     }
 
+
+    public function is_concluido(){
+
+        $dados = parent::get_dados();
+        echo json_encode($this->curso->get_dados_conclusao($dados->curso_id, $dados->usuario_id));
+    }
     private function valida($curso, $edicao)
     {
         $validacao = parent::get_validador($curso);

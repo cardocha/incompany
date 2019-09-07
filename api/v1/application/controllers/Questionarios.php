@@ -57,6 +57,49 @@ class Questionarios extends BaseController
         }
     }
 
+    public function responder()
+    {
+        $id = 0;
+        $alternativas = parent::get_dados();
+        $validacao = !empty($alternativas);
+        $msg = "Questionário Enviado.";
+        
+        $qtd_alternativas = count($alternativas);
+        $porcentagem_cada = 100 / $qtd_alternativas;
+        $porcentagem_total = 0;
+        $primeira_alternativa = $alternativas[0];
+        $usuario_id = $primeira_alternativa->usuario_id;
+        $material_id = $primeira_alternativa->material_id;
+        $curso_id = $primeira_alternativa->curso_id;
+        
+        foreach($alternativas as $alternativa){
+            if($alternativa->correta)
+                $porcentagem_total+=$porcentagem_cada;
+        }
+        
+        $interacao_anterior = $this->interacao->get_registro_por_material_usuario($material_id, $usuario_id, $curso_id);
+        
+            
+        if( !$interacao_anterior ||  ( $interacao_anterior && $porcentagem_total > $interacao_anterior->percentual))
+        {
+            $inscricao = $this->curso->get_inscricao($usuario_id, $curso_id);
+            
+            if ($validacao) {
+                $insercao = array(
+                    "id" => !$interacao_anterior ? 0 : $interacao_anterior->id,
+                    "material_id" =>  $material_id,
+                    "inscricao_id" => $inscricao['id'],
+                    "percentual" => $porcentagem_total
+                );
+                $id = $this->interacao->persistir($insercao);
+            } else {
+                $msg = "Dados inválidos para envio do questionário";
+            }
+        }
+    
+        echo parent::resposta_json(true, $msg, null);
+    }
+
     protected function persistir($questao)
     {
         $id = 0;

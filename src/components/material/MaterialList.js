@@ -6,6 +6,7 @@ import { Notificacao } from '../notificacao/Notificacao';
 import { QuestionarioList } from '../questionario/QuestionarioList';
 import { Auth } from '../../api/Auth';
 import { Link } from "react-router-dom";
+import { CursoRepository } from '../../api/CursoRepository';
 
 export class MaterialList extends Component {
     constructor(props) {
@@ -119,7 +120,8 @@ export class MaterialList extends Component {
     }
 
     async registrarInteracao(material) {
-        this.setStatusRequisicao(await MaterialRepository.interacao(material.id, Auth.get().id, this.props.unidadeSelecionada.curso_id));
+        if (!material.interacao || material.interacao < 100)
+            this.setStatusRequisicao(await MaterialRepository.interacao(material.id, Auth.get().id, this.props.unidadeSelecionada.curso_id));
     }
 
     handleClick(acao) {
@@ -157,15 +159,19 @@ export class MaterialList extends Component {
 
     todosMaterialsDaUnidadeConcluidos() {
         let item = this.state.materiais.find(function (material) {
-            return material.interacao === false && !material.final
+            return material.interacao === 0 && !material.final
         })
         return item === undefined
     }
 
     mostraInteracao(material) {
-        if (material.interacao)
-            return (<Icon floated="right" name="green check"></Icon>)
-        return (<Icon floated="right" name="orange circle"></Icon>)
+        if (material.interacao > 70)
+            return (<Label color="green" basic floated="right" size="mini"><Icon name="green check"></Icon>{material.interacao + "%"}</Label>)
+
+        if (!material.interacao)
+            material.interacao = 0;
+
+        return (<Label color="orange" basic floated="right" size="mini"><Icon name="orange circle"></Icon>{material.interacao + "%"}</Label>)
     }
 
     renderMaterial(material) {
@@ -223,8 +229,22 @@ export class MaterialList extends Component {
         if (resultado.data.flag) {
             this.setState({ materialSelecionado: this.initializeMaterial() })
             this.updateMateriais()
-            //this.props.update()
+            if (this.props.update !== undefined) {
+                if (this.verificaUpdateCurso())
+                    this.props.update()
+            }
         }
+    }
+
+    async verificaUpdateCurso() {
+        const dadosConclusao = await CursoRepository.isConcluido(this.props.unidadeSelecionada.curso_id)
+        return this.isCursoConcluido(dadosConclusao.data)
+    }
+
+    isCursoConcluido(dadosConclusao) {
+        const concluido = Number(dadosConclusao.percentual_total);
+        const minimo = Number(dadosConclusao.percentual_docs) + Number(dadosConclusao.percentual_questoes)
+        return concluido >= minimo
     }
 
     renderMateriais(materiais, tipo, titulo) {
@@ -260,8 +280,10 @@ export class MaterialList extends Component {
         return this.state.modalQuestoes ? (
             <QuestionarioList
                 setVisibleModal={this.setVisibleModalQuestoes.bind(this)}
+                updateMateriais={this.updateMateriais.bind(this)}
                 modalQuestoes={this.state.modalQuestoes}
-                questionario={this.state.materialSelecionado}>
+                questionario={this.state.materialSelecionado}
+                update={this.props.update}>
             </QuestionarioList>) : ''
     }
 

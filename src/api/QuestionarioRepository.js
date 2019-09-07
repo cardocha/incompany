@@ -13,6 +13,10 @@ export class QuestionarioRepository {
         return WebApi.create().post('questionarios/nova', material)
     }
 
+    static enviar(questoes) {
+        return WebApi.create().post('questionarios/responder', questoes)
+    }
+
     static remove(questao) {
         return WebApi.create().delete('questionarios', { "data": questao })
     }

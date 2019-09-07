@@ -14,12 +14,26 @@ class Interacao extends BaseModel
     
     public function get_por_material_usuario($material_id, $usuario_id, $curso_id)
     {
-        $this->db->select('*');
-        $this->db->from($this->get_tabela());
-        $this->db->join('inscricao_dados ind', 'ind.curso_id ='.$curso_id.' and ind.usuario_id='.$usuario_id);
-        $this->db->join('interacao inte', 'inte.inscricao_id = ind.inscricao_id and inte.material_id='.$material_id);
-        $query = $this->db->get();
-        return $query->num_rows() > 0;
+        $query = $this->db->query('select inte.* from interacao inte
+            join inscricao_dados inc on inc.usuario_id = '.$usuario_id.' and inc.curso_id = '.$curso_id.'
+            join inscricao incr on incr.id = inc.inscricao_id
+            where inte.material_id = '.$material_id.';');
+        if (count($query->result_array()) > 0)
+            return $query->result_array()[0]['percentual'];
+        else
+            return false;
+    }
+
+    public function get_registro_por_material_usuario($material_id, $usuario_id, $curso_id)
+    {
+        $query = $this->db->query('select inte.* from interacao inte
+            join inscricao_dados inc on inc.usuario_id = '.$usuario_id.' and inc.curso_id = '.$curso_id.'
+            join inscricao incr on incr.id = inc.inscricao_id
+            where inte.material_id = '.$material_id.';');
+        if (count($query->result_array()) > 0)
+            return $query->result()[0];
+        else
+            return false;
     }
 
     public function persistir($interacao)

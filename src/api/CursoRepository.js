@@ -1,4 +1,5 @@
 import { WebApi } from './WebApi';
+import { Auth } from './Auth';
 export class CursoRepository {
 
     static all() {
@@ -7,6 +8,10 @@ export class CursoRepository {
 
     static save(curso) {
         return WebApi.create().post('cursos', curso)
+    }
+
+    static isConcluido(curso) {
+        return WebApi.create().post('cursos/is_concluido', { curso_id: curso, usuario_id: Auth.get().id })
     }
 
     static inscrever(cursoId, usuarioId) {
