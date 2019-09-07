@@ -23,7 +23,11 @@ abstract class BaseModel extends CI_Model
         $dados = $this->sanitize_fields($dados,  $tabela);
 
         if (isset($dados['id']) && intval($dados['id']) > 0)
-            return $this->atualiza($dados);
+        {
+            $dados = $this->sanitize_fields($dados, $tabela);
+            $this->db->where('id', $dados['id']);
+            return $this->db->update($tabela, $dados);
+        }
 
         unset($dados['id']);
 
@@ -78,7 +82,7 @@ abstract class BaseModel extends CI_Model
         return $query->result()[0];
     }
 
-     public function get_lista_por_campo_valor($campo, $valor)
+    public function get_lista_por_campo_valor($campo, $valor)
     {
         $this->db->select('id');
         $this->db->from($this->get_tabela());
@@ -86,6 +90,18 @@ abstract class BaseModel extends CI_Model
         $query = $this->db->get();
         if ($query->num_rows() > 0)
             return $query->result_array();
+        else
+            return false;
+    }
+
+    public function get_registro_por_campo_valor_table($campo, $valor, $table)
+    {
+        $this->db->select('*');
+        $this->db->from($table);
+        $this->db->where($campo, $valor);
+        $query = $this->db->get();
+        if ($query->num_rows() > 0)
+            return $query->result()[0];
         else
             return false;
     }

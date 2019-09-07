@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { List, Button, Icon, Label, Popup, Form, Header, Segment } from 'semantic-ui-react'
+import { List, Button, Icon, Label, Segment } from 'semantic-ui-react'
 import { MaterialItemForm } from './MaterialItemForm';
 import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { QuestionarioList } from '../questionario/QuestionarioList';
 import { Auth } from '../../api/Auth';
-import { Link } from "react-router-dom";
 import { CursoRepository } from '../../api/CursoRepository';
 
 export class MaterialList extends Component {

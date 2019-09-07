@@ -47,12 +47,29 @@ class Cursos extends BaseController
         echo json_encode($curso);
     }
 
+    public function get_avaliacao(){
+        $dados = parent::get_dados();
+        echo json_encode($this->curso->get_avaliacao($dados->curso_id, $dados->usuario_id));
+    }
 
     public function is_concluido(){
 
         $dados = parent::get_dados();
         echo json_encode($this->curso->get_dados_conclusao($dados->curso_id, $dados->usuario_id));
     }
+
+    public function avaliacao(){
+        $dados = parent::get_dados();
+        $inscricao = $this->curso->get_inscricao($dados->usuario_id, $dados->curso_id);
+        if($inscricao)
+            $avaliacao_anterior = $this->curso->get_registro_por_campo_valor_table("inscricao_id",$inscricao['id'],'avaliacao');
+        else
+            $avaliacao_anterior = false;
+
+        $this->curso->avaliacao($inscricao, $dados->comentario, $dados->nota, $avaliacao_anterior);
+        echo parent::resposta_json(true, 'Avaliação Enviada', null); 
+    }
+
     private function valida($curso, $edicao)
     {
         $validacao = parent::get_validador($curso);

@@ -3,7 +3,7 @@ import { CursoRepository } from '../../api/CursoRepository';
 import {
     Segment, Form, Button, Divider,
     Header, Label, Icon,
-    Input, Dropdown, List, Grid, Menu, Rating,
+    Input, Dropdown, List, Grid, Menu, Rating, TextArea,
 } from 'semantic-ui-react';
 import './curso-detalhe.css'
 import { Auth } from '../../api/Auth';
@@ -13,7 +13,9 @@ import { Link } from "react-router-dom";
 import { BarraTopo } from '../BarraTopo';
 import { TagaRepository } from '../../api/TagRepository';
 import { Notificacao } from '../notificacao/Notificacao';
-import Iframe from 'react-iframe'
+import ReactToPrint from 'react-to-print';
+import { Certificado } from '../certificado/Certificado';
+import { PopupForm } from '../PopupForm';
 
 export class CursoDetalhe extends Component {
 
@@ -27,7 +29,12 @@ export class CursoDetalhe extends Component {
             categorias: [],
             tags: [],
             updateCurso: 1,
-            dadosConclusao: {}
+            dadosConclusao: {},
+            avaliacao: {
+                nota: 0,
+                comentario: ''
+            },
+            updateAvaliacao: 1
         }
 
         this.backToDashBoard = this.backToDashBoard.bind(this)
@@ -35,6 +42,7 @@ export class CursoDetalhe extends Component {
         this.excluiTag = this.excluiTag.bind(this)
         this.salvarTag = this.salvarTag.bind(this)
         this.isCursoConcluido = this.isCursoConcluido.bind(this)
+        this.onChangeAvaliacao = this.onChangeAvaliacao.bind(this)
     }
 
     async componentDidMount() {
@@ -62,6 +70,9 @@ export class CursoDetalhe extends Component {
         Notificacao.gerar(resultado)
         if (resultado.data.flag)
             this.updateTags()
+
+        if (resultado.data.msg.includes('Avaliação'))
+            this.updateCurso()
     }
 
     handleChangeTag(e, obj) {
@@ -72,13 +83,22 @@ export class CursoDetalhe extends Component {
         this.setState({ tagSelecionada: tag })
     }
 
+    onChangeAvaliacao(e, obj) {
+        const element = obj !== undefined ? obj : e.target
+        const avaliacao = this.state.avaliacao
+        avaliacao[element.name] = element.value
+        this.setState({ avaliacao: avaliacao })
+    }
+
     async updateCurso() {
         const curso = await CursoRepository.findById(this.props.match.params.id)
+        const avaliacao = await CursoRepository.getAvaliacao(this.props.match.params.id)
         const dadosConclusao = await CursoRepository.isConcluido(this.props.match.params.id)
         const categorias = await CategoriaRepository.all();
         this.updateTags()
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
         this.setState({ cursoSelecionado: curso.data })
+        this.setState({ avaliacao: avaliacao.data })
         this.setState({ dadosConclusao: dadosConclusao.data })
         this.setState({ isConcluido: this.isCursoConcluido() })
         this.setState({ updateCurso: this.state.updateCurso + 1 })
@@ -132,23 +152,74 @@ export class CursoDetalhe extends Component {
         return concluido >= minimo
     }
 
+    async enviarAvaliacao() {
+        this.setStatusRequisicao(await CursoRepository.enviarAvaliacao(this.state.cursoSelecionado.id, this.state.avaliacao.comentario, this.state.avaliacao.nota))
+    }
 
     renderAreaAluno() {
         return (
             <div key={'area-aluno-' + this.state.updateCurso}>
                 <BarraTopo></BarraTopo>
+                {
+                    this.state.isConcluido ?
+                        <Certificado
+                            ref={el => (this.componentRef = el)}
+                            curso={this.state.cursoSelecionado}
+                            usuario={Auth.get()} /> : ''
+                }
+
                 <Segment key={this.state.updateCurso}>
 
-                    <Segment>{this.state.cursoSelecionado.titulo}
+                    <Segment >{this.state.cursoSelecionado.titulo}
                         {this.state.isConcluido ? (<div style={{ display: "inline-block" }} >
                             &nbsp;&nbsp; (Concluído) <Icon name="green check"></Icon> &nbsp;&nbsp;&nbsp;&nbsp;
                             <Menu text compact size="mini">
                                 <Menu.Item>
-                                    <Button basic size="mini" color="blue"><Icon name="comment"></Icon> Feedback</Button>
+                                    <div>
+                                        <ReactToPrint
+                                            trigger={() => <Button basic size="mini" color="purple"><Icon name="certificate"></Icon>Imprimir/Salvar Certificado</Button>}
+                                            content={() => this.componentRef}
+                                        />
+                                    </div>
                                 </Menu.Item>
-
                                 <Menu.Item>
-                                    <Rating icon='star' defaultRating={0} maxRating={5} />
+                                    <PopupForm
+                                        trigger={
+                                            <Button basic size="mini" color="blue"><Icon name="comment"></Icon> Feedback</Button>
+                                        }
+                                        position="left center"
+                                        content={
+                                            <Form encType="multipart/form-data">
+                                                <Header>Avaliação curso</Header>
+
+                                                <Form.Field>
+                                                    <label>Nota: {this.state.avaliacao.nota}</label>
+                                                    <input placeholder='Nota'
+                                                        name="nota"
+                                                        max={5}
+                                                        type="range"
+                                                        value={this.state.avaliacao.nota}
+                                                        onChange={this.onChangeAvaliacao} />
+                                                </Form.Field>
+                                                <Form.Field>
+                                                    <label>Comentário</label>
+                                                    <TextArea name='comentario'
+                                                        onChange={this.onChangeAvaliacao}
+                                                        rows={3}
+                                                        placeholder='Comentário'
+                                                        value={this.state.avaliacao.comentario} />
+                                                </Form.Field>
+                                                <Form.Field >
+                                                    <label>&nbsp;</label>
+                                                    <Button
+                                                        onClick={() => this.enviarAvaliacao()}
+                                                        icon="check"
+                                                        basic></Button>
+                                                </Form.Field>
+
+                                            </Form>
+                                        }
+                                    ></PopupForm>
                                 </Menu.Item>
                             </Menu>
                         </div>) : ''}

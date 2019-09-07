@@ -69,6 +69,24 @@ class Curso extends BaseModel
             return false;   
     }
 
+    public function avaliacao($inscricao, $comentario, $nota, $avaliacao_anterior){
+
+        $this->db->trans_start();
+      
+        $avaliacao = array(
+            "id" => $avaliacao_anterior ? $avaliacao_anterior->id : 0,
+            "inscricao_id" => $inscricao['id'] ,
+            "comentario" => $comentario,
+            "nota" => $nota
+        );
+
+        $id = parent::persiste_table($avaliacao, 'avaliacao');
+
+        $this->db->trans_complete();
+
+        return $id;
+    }
+
     public function inscrever($curso_id,$usuario_id){
 
         $this->db->trans_start();
@@ -101,6 +119,16 @@ class Curso extends BaseModel
 
     public function get_por_id($id){
         return (object) parent::get_registro_por_id($id);
+    }
+
+    public function get_avaliacao($curso_id,$usuario_id){
+        $this->db->select('ava.*');
+        $this->db->from('avaliacao ava');
+        $this->db->join('inscricao_dados insd','insd.curso_id = '.$curso_id.' and insd.usuario_id='.$usuario_id);
+        $this->db->join('inscricao inc','inc.id = insd.inscricao_id');
+        $this->db->where('ava.inscricao_id = inc.id');
+        $query = $this->db->get();
+        return $query->result()[0];
     }
 
     public function persistir($curso)

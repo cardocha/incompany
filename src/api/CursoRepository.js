@@ -14,6 +14,19 @@ export class CursoRepository {
         return WebApi.create().post('cursos/is_concluido', { curso_id: curso, usuario_id: Auth.get().id })
     }
 
+    static getAvaliacao(curso) {
+        return WebApi.create().post('cursos/get_avaliacao', { curso_id: curso, usuario_id: Auth.get().id })
+    }
+
+    static enviarAvaliacao(curso, comentario, nota) {
+        return WebApi.create().post('cursos/avaliacao', {
+            curso_id: curso,
+            comentario: comentario,
+            nota: nota,
+            usuario_id: Auth.get().id
+        })
+    }
+
     static inscrever(cursoId, usuarioId) {
         return WebApi.create().post('cursos/inscrever', { usuario_id: usuarioId, curso_id: cursoId })
     }
