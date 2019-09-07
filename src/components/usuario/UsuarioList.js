@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider } from 'semantic-ui-react'
+import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider, Popup } from 'semantic-ui-react'
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { PopupForm } from '../PopupForm';
 import { UsuarioItemForm } from './UsuarioItemForm';
@@ -27,13 +27,11 @@ export class UsuarioList extends Component {
     }
 
     async updateUsuarios() {
-        /*  this.setState({ carregarUsuarios: true }) */
 
         const usuarios = await UsuarioRepository.all()
         this.setState({ updateUsuarios: this.state.updateUsuarios + 1 })
         this.setState({ usuarios: usuarios.data })
 
-        /*  this.setState({ carregarUsuarios: false }) */
     }
 
     initializeUsuario() {
@@ -126,18 +124,32 @@ export class UsuarioList extends Component {
                             <PopupForm
                                 onCloseAction={this.handleOncloseChange}
                                 trigger={
-                                    <Button onClick={() => this.selectUsuario(u)} className="botao-item-sistema" basic>
-                                        <List.Content>
-                                            <Segment compact basic>
-                                                <Icon name='user' size='big' />
-                                                <List.Header className="nome-list">{u.nome}</List.Header>
-                                                <Divider></Divider>
-                                                <Label size="mini" basic>
-                                                    <Icon name='mail' /> {u.email}
-                                                </Label>
-                                            </Segment>
-                                        </List.Content>
-                                    </Button>
+                                    <div>
+                                        <Button onClick={() => this.selectUsuario(u)} className="botao-item-sistema" basic>
+                                            <List.Content>
+                                                <Segment compact basic>
+
+                                                    <Icon name='user' size='big' />
+                                                    <List.Header className="nome-list">{u.nome}</List.Header>
+                                                    <Divider></Divider>
+                                                    <Label size="mini" basic>
+                                                        <Icon name='mail' /> {u.email}
+                                                    </Label>
+                                                    {
+                                                        u.tipo === 'A' ?
+                                                            <Label size="mini" color='red' basic>ADM</Label> :
+                                                            (
+                                                                <Label size="mini" color='blue' basic>Aluno</Label>
+                                                            )
+                                                    }
+
+
+                                                </Segment>
+
+
+                                            </List.Content>
+                                        </Button>
+                                    </div>
                                 }
                                 position="left center"
                                 content={

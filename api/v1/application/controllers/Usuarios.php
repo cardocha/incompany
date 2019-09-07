@@ -21,6 +21,12 @@ class Usuarios extends BaseController {
         }
     }
     
+    public function lookup($id){
+        $curso = $this->usuario->get_detalhes($id);
+        echo json_encode($curso);
+    }
+
+
     private function valida($usuario, $edicao)
     {
         $validacao = parent::get_validador($usuario);

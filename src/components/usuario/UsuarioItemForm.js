@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Button, Header, Dropdown } from 'semantic-ui-react';
+import { Form, Button, Header, Dropdown, Divider, Icon } from 'semantic-ui-react';
+import { Link } from "react-router-dom";
 
 
 export const UsuarioItemForm = ({ usuario,
@@ -34,5 +35,10 @@ export const UsuarioItemForm = ({ usuario,
         {
             titulo.includes('Edição') ?
                 <Button onClick={() => onClickAction('R')} icon="close" basic></Button> : ''
+        }
+      
+        {
+            titulo.includes('Edição') && usuario.tipo === 'U' ?
+                <div><Divider></Divider><Link to={`usuarios/${usuario.id}`}><Button attached="bottom" size="mini" basic><Icon name="chart bar"></Icon> Relatório</Button></Link></div> : ''
         }
     </Form>

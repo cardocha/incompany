@@ -10,6 +10,10 @@ export class UsuarioRepository {
         return WebApi.create().post('usuarios', usuario)
     }
 
+    static findById(usuarioId) {
+        return WebApi.create().get(`usuarios/${usuarioId}`)
+    }
+
     static remove(usuario) {
         return WebApi.create().delete('usuarios', { "data": usuario })
     }

@@ -5,10 +5,8 @@ import 'semantic-ui-css/semantic.min.css'
 import 'react-toastify/dist/ReactToastify.css';
 import { Dashboard } from './components/Dashboard';
 import { CursoDetalhe } from './components/curso/CursoDetalhe';
-import { QuestionarioList } from './components/questionario/QuestionarioList';
 import { Login } from './components/login/Login';
-import { Auth } from './api/Auth';
-import { BarraTopo } from './components/BarraTopo';
+import { UsuarioDetalhe } from './components/usuario/UsuarioDetalhe';
 
 toast.configure()
 
@@ -20,6 +18,7 @@ function App() {
         <Route path="/login" exact component={Login}></Route>
         <Route path="/dashboard" exact component={Dashboard}></Route>
         <Route path="/cursos/:id" exact component={CursoDetalhe}></Route>
+        <Route path="/usuarios/:id" exact component={UsuarioDetalhe}></Route>
       </Switch>
     </BrowserRouter>
 
