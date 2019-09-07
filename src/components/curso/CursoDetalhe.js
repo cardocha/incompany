@@ -141,8 +141,8 @@ export class CursoDetalhe extends Component {
 
                     <Segment>{this.state.cursoSelecionado.titulo}
                         {this.state.isConcluido ? (<div style={{ display: "inline-block" }} >
-                            &nbsp;&nbsp; <Icon name="green check"></Icon> &nbsp;&nbsp;&nbsp;&nbsp;
-                        <Menu compact size="mini">
+                            &nbsp;&nbsp; (Concluído) <Icon name="green check"></Icon> &nbsp;&nbsp;&nbsp;&nbsp;
+                            <Menu text compact size="mini">
                                 <Menu.Item>
                                     <Button basic size="mini" color="blue"><Icon name="comment"></Icon> Feedback</Button>
                                 </Menu.Item>

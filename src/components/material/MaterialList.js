@@ -230,15 +230,18 @@ export class MaterialList extends Component {
             this.setState({ materialSelecionado: this.initializeMaterial() })
             this.updateMateriais()
             if (this.props.update !== undefined) {
-                if (this.verificaUpdateCurso())
-                    this.props.update()
+                this.verificaUpdateCurso()
             }
         }
     }
 
     async verificaUpdateCurso() {
-        const dadosConclusao = await CursoRepository.isConcluido(this.props.unidadeSelecionada.curso_id)
-        return this.isCursoConcluido(dadosConclusao.data)
+        const validaDados = this.isCursoConcluido
+        const atualiza = this.props.update
+        CursoRepository.isConcluido(this.props.unidadeSelecionada.curso_id).then(function (dadosConclusao) {
+            if (validaDados(dadosConclusao.data))
+                atualiza()
+        })
     }
 
     isCursoConcluido(dadosConclusao) {

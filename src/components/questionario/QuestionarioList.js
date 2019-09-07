@@ -63,15 +63,18 @@ export class QuestionarioList extends Component {
                 this.props.updateMateriais()
 
             if (this.props.update !== undefined) {
-                if (this.verificaUpdateCurso())
-                    this.props.update()
+                this.verificaUpdateCurso()
             }
         }
     }
 
     async verificaUpdateCurso() {
-        const dadosConclusao = await CursoRepository.isConcluido(this.state.materialSelecionado.cursoId)
-        return this.isCursoConcluido(dadosConclusao.data)
+        const validaDados = this.isCursoConcluido
+        const atualiza = this.props.update
+        CursoRepository.isConcluido(this.state.materialSelecionado.cursoId).then(function (dadosConclusao) {
+            if (validaDados(dadosConclusao.data))
+                atualiza()
+        })
     }
 
     isCursoConcluido(dadosConclusao) {
