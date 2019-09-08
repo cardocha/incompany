@@ -7,7 +7,7 @@ import {
 import 'semantic-ui-css/semantic.min.css'
 import 'react-toastify/dist/ReactToastify.css';
 import './login.css'
-import { WebApi } from '../../api/WebApi';
+import { WebActions } from '../../api/WebActions';
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { Auth } from '../../api/Auth';
@@ -71,7 +71,7 @@ export class Login extends Component {
             {this.redirectToDashBoard}
             <Divider></Divider>
             <Divider hidden />
-            <Image centered size='tiny' className="inline-block" src={WebApi.getUrl() + 'assets/images/incompany.png'} />
+            <Image centered size='tiny' className="inline-block" src={WebActions.getApiUrl() + 'assets/images/incompany.png'} />
             <Header>Incompany
                      <Label basic> Trainning app</Label>
             </Header>
@@ -96,7 +96,7 @@ export class Login extends Component {
                         Desenvolvido utilizando &nbsp;&nbsp;
                             <a target="_blank" rel="noopener noreferrer" href="https://react.io"><Icon size="big" name="react"></Icon></a>
                         <a target="_blank" rel="noopener noreferrer" href="https://codeigniter.com">
-                            <Image centered className="inline-block" src={WebApi.getUrl() + 'assets/images/codeigniter.png'} />
+                            <Image centered className="inline-block" src={WebActions.getApiUrl() + 'assets/images/codeigniter.png'} />
                         </a>
                     </Menu.Item>
                 </Menu.Menu>

@@ -67,6 +67,9 @@ class Tags extends BaseController
             $msg = parent::get_errors();
         }
 
+        if ($id === FALSE)
+           $msg = "Esta Tag possui dados vinculados.";
+
         echo parent::resposta_json($id > 0, $msg, null);
     }
 }

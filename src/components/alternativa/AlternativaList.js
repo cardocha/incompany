@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Checkbox, Form, Segment, Button, Divider, Icon, Header, Modal } from 'semantic-ui-react';
+import { Checkbox, Segment, Button, Icon, Header } from 'semantic-ui-react';
 import { AlternativaRepository } from '../../api/AlternativaRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { Auth } from '../../api/Auth';

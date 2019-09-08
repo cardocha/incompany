@@ -1,15 +1,15 @@
-import { WebApi } from './WebApi';
+import { WebActions } from './WebActions';
 export class CategoriaRepository {
 
     static all() {
-        return WebApi.create().get('categorias')
+        return WebActions.createRequest().get('categorias')
     }
 
     static save(categoria) {
-        return WebApi.create().post('categorias', categoria)
+        return WebActions.createRequest().post('categorias', categoria)
     }
 
     static remove(categoria) {
-        return WebApi.create().delete('categorias', { "data": categoria })
+        return WebActions.createRequest().post('categorias', { "data": categoria, "op": "del" })
     }
 }

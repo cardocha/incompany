@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'semantic-ui-css/semantic.min.css'
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +12,7 @@ toast.configure()
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Switch>
         <Route path="/" exact component={Login}></Route>
         <Route path="/login" exact component={Login}></Route>
@@ -20,7 +20,7 @@ function App() {
         <Route path="/cursos/:id" exact component={CursoDetalhe}></Route>
         <Route path="/usuarios/:id" exact component={UsuarioDetalhe}></Route>
       </Switch>
-    </BrowserRouter>
+    </HashRouter>
 
   );
 }

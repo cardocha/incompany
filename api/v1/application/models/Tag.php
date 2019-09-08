@@ -22,10 +22,11 @@ class Tag extends BaseModel
     }
 
     public function get_por_curso_id($id) : array
-    {
+    {   
         $this->db->select('t.*');
         $this->db->from($this->get_tabela().' t');
         $this->db->join('curso cur','cur.id = t.curso_id');
+        $this->db->where('cur.id', $id);
         $this->db->order_by("descricao");
         $query = $this->db->get();
         return $query->result_array();

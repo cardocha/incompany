@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BarraTopo } from '../BarraTopo';
-import { Segment, Grid, Icon, Label, Divider, Header, List, Table, Button } from 'semantic-ui-react';
+import { Segment, Icon, Label, Header, List, Table, Button } from 'semantic-ui-react';
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { CursoRepository } from '../../api/CursoRepository';
 import { Link } from "react-router-dom";
@@ -29,7 +29,7 @@ export class UsuarioDetalhe extends Component {
     isCursoConcluido(dadosConclusao) {
         const concluido = Number(dadosConclusao.percentual_total);
         const minimo = Number(dadosConclusao.percentual_docs) + Number(dadosConclusao.percentual_questoes)
-        return concluido >= minimo
+        return concluido > 0 && minimo > 0 && concluido >= minimo
     }
 
     initializeUsuario() {
@@ -63,6 +63,8 @@ export class UsuarioDetalhe extends Component {
                 return this.getTipoDocumento(url)
             case 'Q':
                 return "question circle outline"
+            default:
+                return "file outline"
         }
     }
 

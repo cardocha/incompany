@@ -1,8 +1,8 @@
 {
-  "homepage": "https://cardocha.github.io/incompany.github.io",
   "name": "incompany",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://incompany.epizy.com/incompany/",
   "dependencies": {
     "axios": "^0.19.0",
     "crypto-js": "^3.1.9-1",
@@ -22,9 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,5 +38,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "terser-brunch": "^3.0.0"
   }
 }

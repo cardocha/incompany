@@ -21,20 +21,22 @@ class Unidades extends BaseController
         }
     }
 
-    public function lookup($curso_id){
+    public function lookup($curso_id)
+    {
         $method = parent::detectar_acao();
         if ($method === "GET") {
             $resultado_query = $this->unidade->get_por_curso_id($curso_id);
             $unidades = [];
-            foreach($resultado_query as $unidade){
-               $unidade->materiais = $this->material->get_por_unidade_id($unidade->id);
-               $unidades[] = $unidade;
+            foreach ($resultado_query as $unidade) {
+                $unidade->materiais = $this->material->get_por_unidade_id($unidade->id);
+                $unidades[] = $unidade;
             }
             echo json_encode($unidades);
         }
     }
 
-    public function find($unidade_id){
+    public function find($unidade_id)
+    {
         $method = parent::detectar_acao();
         if ($method === "GET") {
             $resultado_query = $this->unidade->get_por_id($unidade_id);
@@ -60,11 +62,11 @@ class Unidades extends BaseController
         $msg = "Unidade Salva.";
 
         if ($validacao) {
-            $id = $this->unidade->persistir((array)$unidade);
+            $id = $this->unidade->persistir((array) $unidade);
         } else {
             $msg = parent::get_errors();
         }
-        
+
         echo parent::resposta_json($id > 0, $msg, null);
     }
 
@@ -72,23 +74,23 @@ class Unidades extends BaseController
     {
         $id = 0;
         $validacao = $this->valida((array) $unidade, true);
-        $possui_materiais = $this->unidade->possui_materiais_vinculados($unidade->id);
-        $msg = "Unidade \"".$unidade->titulo."\" Removida.";
+        $msg = "Unidade \"" . $unidade->titulo . "\" Removida.";
 
-        if (!$possui_materiais) {
-            if ($validacao) {
-                $id = $this->unidade->remover((array)$unidade);
-            } else {
-                $msg = parent::get_errors();
-            }
+
+        if ($validacao) {
+            $id = $this->unidade->remover((array) $unidade);
+        } else {
+            $msg = parent::get_errors();
         }
-        else
-             $msg = "Unidade \"".$unidade->titulo."\" possui materiais vinculados";
+
+        if ($id === FALSE)
+            $msg = "Unidade \"" . $unidade->titulo . "\" possui materiais vinculados";
 
         echo parent::resposta_json($id > 0, $msg, null);
     }
 
-    public function get_curso_selecionado() {
+    public function get_curso_selecionado()
+    {
         return parent::get_dados();
     }
 }

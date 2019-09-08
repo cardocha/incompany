@@ -3,7 +3,7 @@ import { CursoRepository } from '../../api/CursoRepository';
 import {
     Segment, Form, Button, Divider,
     Header, Label, Icon,
-    Input, Dropdown, List, Grid, Menu, Rating, TextArea,
+    Input, Dropdown, List, Grid, Menu, TextArea,
 } from 'semantic-ui-react';
 import './curso-detalhe.css'
 import { Auth } from '../../api/Auth';
@@ -30,10 +30,7 @@ export class CursoDetalhe extends Component {
             tags: [],
             updateCurso: 1,
             dadosConclusao: {},
-            avaliacao: {
-                nota: 0,
-                comentario: ''
-            },
+            avaliacao: this.initializeAvaliacao(),
             updateAvaliacao: 1
         }
 
@@ -44,6 +41,13 @@ export class CursoDetalhe extends Component {
         this.salvarTag = this.salvarTag.bind(this)
         this.isCursoConcluido = this.isCursoConcluido.bind(this)
         this.onChangeAvaliacao = this.onChangeAvaliacao.bind(this)
+    }
+
+    initializeAvaliacao() {
+        return {
+            nota: 0,
+            comentario: ''
+        }
     }
 
     async componentDidMount() {
@@ -99,14 +103,14 @@ export class CursoDetalhe extends Component {
         this.updateTags()
         this.setState({ categorias: this.buildDropdownItensCategoria(categorias.data) })
         this.setState({ cursoSelecionado: curso.data })
-        this.setState({ avaliacao: avaliacao.data })
+        this.setState({ avaliacao: avaliacao.data ? avaliacao.data : this.initializeAvaliacao() })
         this.setState({ dadosConclusao: dadosConclusao.data })
         this.setState({ isConcluido: this.isCursoConcluido() })
         this.setState({ updateCurso: this.state.updateCurso + 1 })
     }
 
     async updateTags() {
-        const tags = await TagaRepository.all()
+        const tags = await TagaRepository.findByCursoId(this.props.match.params.id)
         this.setState({ tags: tags.data })
         this.setState({ tagSelecionada: this.initializeTag() })
     }
@@ -150,7 +154,7 @@ export class CursoDetalhe extends Component {
     isCursoConcluido() {
         const concluido = Number(this.state.dadosConclusao.percentual_total);
         const minimo = Number(this.state.dadosConclusao.percentual_docs) + Number(this.state.dadosConclusao.percentual_questoes)
-        return concluido >= minimo
+        return concluido > 0 && minimo > 0 && concluido >= minimo
     }
 
     async salvarCurso() {

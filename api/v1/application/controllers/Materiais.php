@@ -116,6 +116,9 @@ class Materiais extends BaseController
             $msg = parent::get_errors();
         }
 
+        if ($id === FALSE)
+           $msg = "Esta Material possui dados vinculados.";
+
         echo parent::resposta_json($id > 0, $msg, null);
     }
 

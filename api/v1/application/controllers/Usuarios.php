@@ -68,8 +68,8 @@ class Usuarios extends BaseController {
             $msg = parent::get_errors();
         }
         
-        if(!$id)
-            $msg = "Categoria ".$usuario->nome." possui Cursos vinculados";
+        if ($id === FALSE)
+            $msg = "Usuário ".$usuario->nome." possui dados vinculados";
 
         echo parent::resposta_json($id > 0, $msg, null);
     }

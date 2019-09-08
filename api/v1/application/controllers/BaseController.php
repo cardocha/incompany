@@ -19,8 +19,10 @@ abstract class BaseController extends CI_Controller
         
         $method = $_SERVER["REQUEST_METHOD"];
         $registro = $this->get_dados();
+        $is_delete = !empty($registro->op);
 
-        if ($method === "DELETE") {
+        if ($method === "POST" && $is_delete) {
+            $registro = $registro->data;
             $this->remover($registro);
         } elseif ($method === "POST") {
             $this->persistir($registro);

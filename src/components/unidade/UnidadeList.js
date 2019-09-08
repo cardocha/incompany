@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Icon, Header, Button, Accordion, Popup, Form, Segment } from 'semantic-ui-react'
+import { Icon, Header, Button, Accordion, Popup, Form } from 'semantic-ui-react'
 import { Notificacao } from '../notificacao/Notificacao';
 import { UnidadeRepository } from '../../api/UnidadeRepository';
 import { MaterialList } from '../material/MaterialList';

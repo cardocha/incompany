@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider, Popup } from 'semantic-ui-react'
+import { Segment, List, Label, Icon, Header, Dimmer, Button, Divider } from 'semantic-ui-react'
 import { UsuarioRepository } from '../../api/UsuarioRepository';
 import { PopupForm } from '../PopupForm';
 import { UsuarioItemForm } from './UsuarioItemForm';

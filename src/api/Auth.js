@@ -1,4 +1,4 @@
-import questoes from './questoes-data.json'
+import { WebActions } from "./WebActions";
 
 export class Auth {
     static save(resultado) {
@@ -12,7 +12,7 @@ export class Auth {
 
     static clear() {
         localStorage.clear()
-        window.location.href = '/login'
+        window.location.href = WebActions.getAppUrl()
     }
 
     static isPerfilAdm() {

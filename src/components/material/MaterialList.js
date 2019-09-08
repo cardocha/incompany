@@ -48,6 +48,8 @@ export class MaterialList extends Component {
                 return this.getTipoDocumento(material.url)
             case 'Q':
                 return "question circle outline"
+            default:
+                return "file outline"
         }
     }
 
@@ -143,7 +145,7 @@ export class MaterialList extends Component {
 
     renderBotaoVisualizacao(material) {
         if (material.tipo !== 'Q')
-            return (<a onClick={() => this.registrarInteracao(material)} target='_blank' href={`${material.url}`}><Button floated="right" basic size="mini" >Ver Material</Button> </a>)
+            return (<a onClick={() => this.registrarInteracao(material)} rel="noopener noreferrer" target='_blank' href={`${material.url}`}><Button floated="right" basic size="mini" >Ver Material</Button> </a>)
         else
             return (<Button onClick={() => this.editaQuestoes(material)} floated="right" basic size="mini">Responder Questionário</Button>)
 
@@ -208,7 +210,7 @@ export class MaterialList extends Component {
                     material.tipo === 'Q' ?
                         <Menu.Item><Button onClick={() => this.editaQuestoes(material)} basic size="mini">Questões</Button></Menu.Item> : ''
                 }
-               
+
                 <Menu.Item>
                     <MaterialItemForm
                         material={material}
@@ -233,7 +235,7 @@ export class MaterialList extends Component {
         if (resultado.data.flag) {
             this.setState({ materialSelecionado: this.initializeMaterial() })
             this.updateMateriais()
-            if (this.props.update !== undefined) {
+            if (!Auth.isPerfilAdm() && this.props.update !== undefined) {
                 this.verificaUpdateCurso()
             }
         }
@@ -251,7 +253,8 @@ export class MaterialList extends Component {
     isCursoConcluido(dadosConclusao) {
         const concluido = Number(dadosConclusao.percentual_total);
         const minimo = Number(dadosConclusao.percentual_docs) + Number(dadosConclusao.percentual_questoes)
-        return concluido >= minimo
+
+        return concluido > 0 && minimo > 0 && concluido >= minimo
     }
 
     renderMateriais(materiais, tipo, titulo) {

@@ -1,25 +1,25 @@
-import { WebApi } from './WebApi';
+import { WebActions } from './WebActions';
 import { Auth } from './Auth';
 export class CursoRepository {
 
     static all() {
-        return WebApi.create().get('cursos')
+        return WebActions.createRequest().get('cursos')
     }
 
     static save(curso) {
-        return WebApi.create().post('cursos', curso)
+        return WebActions.createRequest().post('cursos',  curso)
     }
 
     static isConcluido(curso) {
-        return WebApi.create().post('cursos/is_concluido', { curso_id: curso, usuario_id: Auth.get().id })
+        return WebActions.createRequest().post('cursos/is_concluido', { curso_id: curso, usuario_id: Auth.get().id })
     }
 
     static getAvaliacao(curso) {
-        return WebApi.create().post('cursos/get_avaliacao', { curso_id: curso, usuario_id: Auth.get().id })
+        return WebActions.createRequest().post('cursos/get_avaliacao', { curso_id: curso, usuario_id: Auth.get().id })
     }
 
     static enviarAvaliacao(curso, comentario, nota) {
-        return WebApi.create().post('cursos/avaliacao', {
+        return WebActions.createRequest().post('cursos/avaliacao', {
             curso_id: curso,
             comentario: comentario,
             nota: nota,
@@ -28,22 +28,22 @@ export class CursoRepository {
     }
 
     static inscrever(cursoId, usuarioId) {
-        return WebApi.create().post('cursos/inscrever', { usuario_id: usuarioId, curso_id: cursoId })
+        return WebActions.createRequest().post('cursos/inscrever', { usuario_id: usuarioId, curso_id: cursoId })
     }
 
     static findDisponiveis(usuarioId) {
-        return WebApi.create().get(`cursos/disponiveis/usuario/${usuarioId}`)
+        return WebActions.createRequest().get(`cursos/disponiveis/usuario/${usuarioId}`)
     }
 
     static findByIncricaoUsuario(usuarioId) {
-        return WebApi.create().get(`cursos/usuario/${usuarioId}`)
+        return WebActions.createRequest().get(`cursos/usuario/${usuarioId}`)
     }
 
     static remove(curso) {
-        return WebApi.create().delete('cursos', { "data": curso })
+        return WebActions.createRequest().post('cursos', { "data": curso, "op": "del" })
     }
 
     static findById(id) {
-        return WebApi.create().get(`cursos/${id}`)
+        return WebActions.createRequest().get(`cursos/${id}`)
     }
 }

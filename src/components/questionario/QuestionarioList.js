@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { QuestionarioRepository } from '../../api/QuestionarioRepository';
-import { Modal, List, Button, Icon, Segment, Label, Form, Divider, Breadcrumb, Header, TextArea, Grid } from 'semantic-ui-react';
+import { Modal, List, Button, Icon, Segment, Label, Form, Divider, Breadcrumb, TextArea, Grid } from 'semantic-ui-react';
 import { MaterialRepository } from '../../api/MaterialRepository';
 import { Notificacao } from '../notificacao/Notificacao';
 import { AlternativaList } from '../alternativa/AlternativaList';
@@ -58,7 +58,8 @@ export class QuestionarioList extends Component {
         if (resultado.data.flag) {
             this.setState({ questaoSelecionada: this.initializeQuestao() })
             this.updateQuestoes()
-            this.props.setVisibleModal(false)
+            if(!Auth.isPerfilAdm())
+                this.props.setVisibleModal(false)
             if (this.props.updateMateriais !== undefined)
                 this.props.updateMateriais()
 
@@ -80,7 +81,7 @@ export class QuestionarioList extends Component {
     isCursoConcluido(dadosConclusao) {
         const concluido = Number(dadosConclusao.percentual_total);
         const minimo = Number(dadosConclusao.percentual_docs) + Number(dadosConclusao.percentual_questoes)
-        return concluido >= minimo
+        return concluido > 0 && minimo > 0 && concluido >= minimo
     }
 
     async componentDidMount() {

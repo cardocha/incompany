@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Dropdown } from 'semantic-ui-react';
 import { Auth } from '../api/Auth';
+import { WebActions } from '../api/WebActions';
 
 export class BarraTopo extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ export class BarraTopo extends Component {
         return Auth.get() !== null ? (
             <Menu stackable>
                 <Menu.Item>
-                    <img src='/logo.png' alt='logo incompany' />
+                    <img  src={WebActions.getApiUrl() + 'assets/images/incompany.png'} alt='logo incompany' />
                 </Menu.Item>
                 <Menu.Menu position='right'>
                     <Dropdown item text={Auth.get().nome}>

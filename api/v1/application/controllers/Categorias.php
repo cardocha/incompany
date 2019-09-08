@@ -49,18 +49,16 @@ class Categorias extends BaseController
     {
         $id = 0;
         $validacao = $this->valida((array) $categoria, true);
-        $possui_cursos = $this->categoria->possui_cursos_vinculados($categoria->id);
         $msg = "Categoria \"".$categoria->descricao."\" Removida.";
 
-        if (!$possui_cursos) {
-            if ($validacao) {
-                $id = $this->categoria->remover((array)$categoria);
-            } else {
-                $msg = parent::get_errors();
-            }
+        if ($validacao) {
+            $id = $this->categoria->remover((array)$categoria);
+        } else {
+            $msg = parent::get_errors();
         }
-        else
-             $msg = "Categoria ".$categoria->descricao." possui Cursos vinculados";
+        
+        if ($id === FALSE)
+            $msg = "Esta categoria possui cursos vinculados.";
 
         echo parent::resposta_json($id > 0, $msg, null);
     }

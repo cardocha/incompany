@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Segment, Divider, Icon, Image } from 'semantic-ui-react';
+import { Segment, Divider, Image } from 'semantic-ui-react';
 import './certificado.css'
+import { WebActions } from '../../api/WebActions';
 
 export class Certificado extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ export class Certificado extends Component {
         return (
             <Segment textAlign="center" className='container-certificado'>
                 <Divider></Divider>
-                <Image centered size="mini" src='/logo.png' alt='logo incompany' />
+                <Image centered size="mini" src={WebActions.getUrl() + 'assets/images/incompany.png'} alt='logo incompany' />
                 <div>Incompany Trainning</div>
                 <br />
                 <br />

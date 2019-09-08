@@ -128,7 +128,10 @@ class Curso extends BaseModel
         $this->db->join('inscricao inc','inc.id = insd.inscricao_id');
         $this->db->where('ava.inscricao_id = inc.id');
         $query = $this->db->get();
-        return $query->result()[0];
+         if (count($query->result_array()) > 0)
+            return $query->result()[0];
+        else
+            return false;   
     }
 
     public function persistir($curso)

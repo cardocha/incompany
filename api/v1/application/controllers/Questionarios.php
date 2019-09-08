@@ -132,6 +132,9 @@ class Questionarios extends BaseController
             $msg = parent::get_errors();
         }
 
+        if ($id === FALSE)
+           $msg = "Esta Questão possui alternativas vinculadas.";
+
         echo parent::resposta_json($id > 0, $msg, null);
     }
 

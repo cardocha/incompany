@@ -1,24 +1,24 @@
-import { WebApi } from './WebApi';
+import { WebActions } from './WebActions';
 export class AlternativaRepository {
 
     static all() {
-        return WebApi.create().get('alternativas')
+        return WebActions.createRequest().get('alternativas')
     }
 
     static save(curso) {
-        return WebApi.create().post('alternativas', curso)
+        return WebActions.createRequest().post('alternativas', curso)
     }
 
     static remove(curso) {
-        return WebApi.create().delete('alternativas', { "data": curso })
+        return WebActions.createRequest().post('alternativas', { "data": curso, "op": "del" })
     }
 
     static setAlternativaCorreta(questaoId, alternativaId) {
-        return WebApi.create().post('alternativas/atualizar',
+        return WebActions.createRequest().post('alternativas/atualizar',
             { "data": { questaoId: questaoId, alternativaId: alternativaId } })
     }
 
     static findByQuestaoId(questaoId) {
-        return WebApi.create().get(`alternativas/questao/${questaoId}`)
+        return WebActions.createRequest().get(`alternativas/questao/${questaoId}`)
     }
 }

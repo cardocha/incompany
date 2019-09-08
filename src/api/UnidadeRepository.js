@@ -1,23 +1,23 @@
-import { WebApi } from './WebApi';
+import { WebActions } from './WebActions';
 export class UnidadeRepository {
 
     static all() {
-        return WebApi.create().get('unidades')
+        return WebActions.createRequest().get('unidades')
     }
 
     static findByCursoId(cursoId) {
-        return WebApi.create().get(`unidades/curso/${cursoId}`)
+        return WebActions.createRequest().get(`unidades/curso/${cursoId}`)
     }
 
     static findById(unidadeId) {
-        return WebApi.create().get(`unidades/${unidadeId}`)
+        return WebActions.createRequest().get(`unidades/${unidadeId}`)
     }
 
     static save(unidade) {
-        return WebApi.create().post('unidades', unidade)
+        return WebActions.createRequest().post('unidades', unidade)
     }
 
     static remove(unidade) {
-        return WebApi.create().delete('unidades', { "data": unidade })
+        return WebActions.createRequest().post('unidades', { "data": unidade, "op": "del" })
     }
 }
