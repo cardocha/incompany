@@ -25,7 +25,6 @@ export class BarraTopo extends Component {
                 <Menu.Menu position='right'>
                     <Dropdown item text={Auth.get().nome}>
                         <Dropdown.Menu>
-                            <Dropdown.Item>Alterar Senha</Dropdown.Item>
                             <Dropdown.Item onClick={Auth.clear}>Sair</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>

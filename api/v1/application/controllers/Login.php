@@ -9,7 +9,8 @@ class Login extends BaseController {
     {
         parent::__construct();
 		$this->load->helper('usuario_helper');
-		carregar_dependencias();
+		$this->load->library('form_validation');
+        $this->load->model('usuario');
     }
 
     public function index(){

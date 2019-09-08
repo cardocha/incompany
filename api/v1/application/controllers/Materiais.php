@@ -7,7 +7,10 @@ class Materiais extends BaseController
     {
         parent::__construct();
         $this->load->helper('material_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('material');
+        $this->load->model('curso');
+        $this->load->model('interacao');
     }
 
     public function index()

@@ -7,7 +7,10 @@ class Questionarios extends BaseController
     {
         parent::__construct();
         $this->load->helper('questionario_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('questao');
+        $this->load->model('curso');
+        $this->load->model('interacao');
     }
 
     public function index()

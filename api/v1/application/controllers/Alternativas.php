@@ -7,7 +7,8 @@ class Alternativas extends BaseController
     {
         parent::__construct();
         $this->load->helper('alternativa_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('alternativa');
     }
 
     public function index()

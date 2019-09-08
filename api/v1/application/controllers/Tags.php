@@ -7,7 +7,8 @@ class Tags extends BaseController
     {
         parent::__construct();
         $this->load->helper('tag_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('tag');
     }
 
     public function index()

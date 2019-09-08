@@ -7,7 +7,9 @@ class Unidades extends BaseController
     {
         parent::__construct();
         $this->load->helper('unidade_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('unidade');
+        $this->load->model('material');
     }
 
     public function index()

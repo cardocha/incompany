@@ -7,7 +7,8 @@ class Categorias extends BaseController
     {
         parent::__construct();
         $this->load->helper('categoria_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('categoria');
     }
 
     public function index()

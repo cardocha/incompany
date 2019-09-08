@@ -7,7 +7,10 @@ class Cursos extends BaseController
     {
         parent::__construct();
         $this->load->helper('curso_helper');
-        carregar_dependencias();
+        $this->load->library('form_validation');
+        $this->load->model('curso');
+        $this->load->model('unidade');
+        $this->load->model('material');
     }
 
     public function index()
