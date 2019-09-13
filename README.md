@@ -2,7 +2,7 @@
 Small in company tranning app that uses PHP/Codeigniter and React.js.
 The idea is that the company use the app like a self hosted trainning platform for employees.
 
-![alt text](https://www.youtube.com/watch?v=vlCXkDEIZv8&t=32s)
+![Video Demonstration ](https://www.youtube.com/watch?v=vlCXkDEIZv8&t=32s)
 
 
 ## Getting Started
