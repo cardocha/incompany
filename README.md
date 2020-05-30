@@ -24,7 +24,7 @@
 </p>
 
 
-
+## Description 
 <p> 
 The idea behind this project is provide a self hosted trainning platform for employees.
 </p>
@@ -39,7 +39,9 @@ The project root is a react app. The api folder contains a Codeigniter Back-end 
 
 ### Prerequisites
 
-PHP7 and React 16 
+- PHP7 [view more](https://www.php.net/downloads)
+- React 16 [view more](https://pt-br.reactjs.org/)
+---
 
 ## Authors
 
