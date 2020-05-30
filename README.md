@@ -8,6 +8,9 @@
 <p align="center">Small in company tranning app that uses PHP/Codeigniter and React.js.
 </p>
 <p align="center">
+   <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License MIT">
+  </a>
   <a href="https://github.com/cardocha/incompany/commits/master">
    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/cardocha/incompany">
   </a>
